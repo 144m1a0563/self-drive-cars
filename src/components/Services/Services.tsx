@@ -275,13 +275,13 @@ const Services = () => {
 
           <div className="relative z-10 mt-7 flex flex-col gap-3 sm:flex-row lg:mt-0">
             <motion.a
-              href="tel:+919052885299"
+              href="tel:+919603785823"
               whileHover={{ y: -3 }}
               whileTap={{ scale: 0.97 }}
               className="flex items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-red-600/25 transition-colors hover:bg-white hover:text-black"
             >
               <FaPhoneAlt size={13} />
-              +91 90528 85299
+              +91 9603785823
             </motion.a>
 
             <motion.a

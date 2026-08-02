@@ -211,7 +211,7 @@ const Contact = () => {
 
               <div className="mt-8 space-y-4">
                 <a
-                  href="tel:+919052885299"
+                  href="tel:+919603785823"
                   className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.06] p-4 transition-all hover:border-red-500/40 hover:bg-white/[0.1]"
                 >
                   <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-600 text-[18px] text-white">
@@ -224,13 +224,13 @@ const Contact = () => {
                     </span>
 
                     <span className="mt-1 block text-[15px] font-bold text-white sm:text-[16px]">
-                      +91 90528 85299
+                      +91 9603785823
                     </span>
                   </span>
                 </a>
 
                 <a
-                  href="https://wa.me/919052885299"
+                  href="https://wa.me/919603785823"
                   target="_blank"
                   rel="noreferrer"
                   className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.06] p-4 transition-all hover:border-green-500/40 hover:bg-white/[0.1]"

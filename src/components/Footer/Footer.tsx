@@ -10,26 +10,81 @@ import {
   FaCarSide,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
-const quickLinks = [
-  { label: "Home", href: "#home" },
-  { label: "About Us", href: "#about" },
-  { label: "Our Cars", href: "#cars" },
-  { label: "Services", href: "#services" },
-  { label: "Why Choose Us", href: "#why-choose-us" },
-  { label: "Booking Process", href: "#booking-process" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Contact Us", href: "#contact" },
+interface FooterLink {
+  label: string;
+  to: string;
+}
+
+const quickLinks: FooterLink[] = [
+  {
+    label: "Home",
+    to: "/",
+  },
+ {
+  label: "About Us",
+  to: "/about",
+},
+  {
+    label: "Our Cars",
+    to: "/cars",
+  },
+  {
+    label: "Services",
+    to: "/#services",
+  },
+  {
+    label: "Why Choose Us",
+    to: "/#why-choose-us",
+  },
+  {
+    label: "Booking Process",
+    to: "/#booking-process",
+  },
+  {
+    label: "Testimonials",
+    to: "/#testimonials",
+  },
+  {
+    label: "FAQ",
+    to: "/#faq",
+  },
+  {
+    label: "Contact Us",
+    to: "/cars#contact",
+  },
 ];
 
-const carLinks = [
-  { label: "Maruti Swift", href: "#maruti-swift" },
-  { label: "Maruti Baleno", href: "#maruti-baleno" },
-  { label: "Maruti Dzire", href: "#maruti-dzire" },
-  { label: "Maruti Ertiga", href: "#maruti-ertiga" },
-  { label: "Toyota Innova", href: "#toyota-innova" },
-  { label: "Mahindra XUV", href: "#mahindra-xuv" },
+const carLinks: FooterLink[] = [
+  {
+    label: "Maruti Swift",
+    to: "/car/maruti-swift",
+  },
+  {
+    label: "Maruti Baleno",
+    to: "/car/maruti-baleno",
+  },
+  {
+    label: "Maruti Dzire",
+    to: "/car/maruti-dzire",
+  },
+  {
+    label: "Maruti Ertiga",
+    to: "/car/maruti-ertiga",
+  },
+  {
+    label: "Toyota Innova",
+    to: "/car/toyota-innova",
+  },
+  {
+    label: "Kia Carens",
+    to: "/car/kia-carens",
+  },
+  {
+    label: "Toyota Fortuner",
+    to: "/car/toyota-fortuner",
+  },
 ];
 
 const Footer = () => {
@@ -37,7 +92,7 @@ const Footer = () => {
 
   return (
     <footer className="relative overflow-hidden bg-[#061426] text-white">
-      {/* Background decorations */}
+      {/* Background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-36 top-0 h-[360px] w-[360px] rounded-full bg-red-600/10 blur-3xl" />
 
@@ -46,7 +101,7 @@ const Footer = () => {
         <div className="absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.03] blur-3xl" />
       </div>
 
-      {/* Top CTA */}
+      {/* CTA */}
       <div className="relative z-10 border-b border-white/10">
         <div className="container-custom py-8 sm:py-10">
           <motion.div
@@ -68,14 +123,14 @@ const Footer = () => {
               </h2>
 
               <p className="mt-3 max-w-[650px] text-[12px] leading-6 text-white/85 sm:text-[13px]">
-                Contact Cherry Cars for clean, reliable and affordable
-                self-drive cars in Tirupati.
+                Contact Vamsi Self Drive Cars for clean, reliable and
+                affordable self-drive cars in Tirupati.
               </p>
             </div>
 
             <div className="relative z-10 mt-7 flex flex-col gap-3 sm:flex-row lg:mt-0">
               <motion.a
-                href="tel:+919052885299"
+                href="tel:+919603785823"
                 whileHover={{ y: -3 }}
                 whileTap={{ scale: 0.97 }}
                 className="flex items-center justify-center gap-3 rounded-xl bg-white px-6 py-4 text-[12px] font-semibold text-red-600 shadow-lg transition-colors hover:bg-[#07182f] hover:text-white"
@@ -85,7 +140,7 @@ const Footer = () => {
               </motion.a>
 
               <motion.a
-                href="https://wa.me/919052885299"
+                href="https://wa.me/919603785823"
                 target="_blank"
                 rel="noreferrer"
                 whileHover={{ y: -3 }}
@@ -106,14 +161,14 @@ const Footer = () => {
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.25fr_0.8fr_0.8fr_1.1fr] lg:gap-8 xl:gap-12">
             {/* Brand */}
             <div>
-              <a href="#home" className="inline-flex items-center gap-3">
+              <Link to="/" className="inline-flex items-center gap-3">
                 <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-600 text-[24px] text-white shadow-lg shadow-red-600/20">
                   <FaCarSide />
                 </span>
 
                 <span>
                   <span className="block text-[28px] font-extrabold leading-none tracking-[-1px] text-white">
-                    CHERRY
+                    VAMSI
                     <span className="text-red-500"> CARS</span>
                   </span>
 
@@ -121,10 +176,10 @@ const Footer = () => {
                     Self Drive Cars
                   </span>
                 </span>
-              </a>
+              </Link>
 
               <p className="mt-6 max-w-[390px] text-[12px] leading-7 text-white/55 sm:text-[13px]">
-                Cherry Cars provides clean, affordable and reliable self-drive
+                Vamsi Cars provides clean, affordable and reliable self-drive
                 vehicles for local travel, airport trips, temple visits and
                 outstation journeys.
               </p>
@@ -147,7 +202,7 @@ const Footer = () => {
                 </a>
 
                 <a
-                  href="https://wa.me/919052885299"
+                  href="https://wa.me/919603785823"
                   target="_blank"
                   rel="noreferrer"
                   aria-label="WhatsApp"
@@ -158,7 +213,7 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Quick links */}
+            {/* Quick Links */}
             <div>
               <h3 className="text-[16px] font-bold text-white">Quick Links</h3>
 
@@ -167,8 +222,8 @@ const Footer = () => {
               <ul className="mt-6 space-y-3">
                 {quickLinks.map((item) => (
                   <li key={item.label}>
-                    <a
-                      href={item.href}
+                    <Link
+                      to={item.to}
                       className="group flex items-center gap-2 text-[12px] font-medium text-white/55 transition-colors hover:text-white"
                     >
                       <FaChevronRight
@@ -177,13 +232,13 @@ const Footer = () => {
                       />
 
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Cars */}
+            {/* Car Links */}
             <div>
               <h3 className="text-[16px] font-bold text-white">Our Cars</h3>
 
@@ -192,8 +247,8 @@ const Footer = () => {
               <ul className="mt-6 space-y-3">
                 {carLinks.map((item) => (
                   <li key={item.label}>
-                    <a
-                      href={item.href}
+                    <Link
+                      to={item.to}
                       className="group flex items-center gap-2 text-[12px] font-medium text-white/55 transition-colors hover:text-white"
                     >
                       <FaChevronRight
@@ -202,13 +257,22 @@ const Footer = () => {
                       />
 
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
+
+              <Link
+                to="/cars"
+                className="mt-6 inline-flex items-center gap-2 text-[12px] font-semibold text-red-400 transition-colors hover:text-white"
+              >
+                View All Cars
+
+                <FaChevronRight size={9} />
+              </Link>
             </div>
 
-            {/* Contact details */}
+            {/* Contact */}
             <div>
               <h3 className="text-[16px] font-bold text-white">
                 Contact Details
@@ -218,7 +282,7 @@ const Footer = () => {
 
               <div className="mt-6 space-y-4">
                 <a
-                  href="tel:+919052885299"
+                  href="tel:+919603785823"
                   className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition-all hover:border-red-500/40 hover:bg-white/[0.07]"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600/15 text-[14px] text-red-400">
@@ -231,13 +295,13 @@ const Footer = () => {
                     </span>
 
                     <span className="mt-1 block text-[13px] font-semibold text-white">
-                      +91 90528 85299
+                      +91 9603785823
                     </span>
                   </span>
                 </a>
 
                 <a
-                  href="mailto:bookings@cherrycars.in"
+                  href="mailto:bookings@vamsicars.in"
                   className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition-all hover:border-red-500/40 hover:bg-white/[0.07]"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600/15 text-[14px] text-red-400">
@@ -250,7 +314,7 @@ const Footer = () => {
                     </span>
 
                     <span className="mt-1 block break-all text-[12px] font-semibold text-white">
-                      bookings@cherrycars.in
+                      bookings@vamsicars.in
                     </span>
                   </span>
                 </a>
@@ -292,34 +356,34 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom footer */}
+      {/* Bottom */}
       <div className="relative z-10 border-t border-white/10 bg-black/10">
         <div className="container-custom flex flex-col items-center justify-between gap-4 py-5 text-center sm:flex-row sm:text-left">
           <p className="text-[10px] leading-5 text-white/40 sm:text-[11px]">
-            © {currentYear} Cherry Self Drive Cars. All rights reserved.
+            © {currentYear} Vamsi Self Drive Cars. All rights reserved.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-            <a
-              href="#"
+            <Link
+              to="/privacy-policy"
               className="text-[10px] font-medium text-white/40 transition-colors hover:text-white"
             >
               Privacy Policy
-            </a>
+            </Link>
 
-            <a
-              href="#"
+            <Link
+              to="/terms-and-conditions"
               className="text-[10px] font-medium text-white/40 transition-colors hover:text-white"
             >
               Terms & Conditions
-            </a>
+            </Link>
 
-            <a
-              href="#faq"
+            <Link
+              to="/#faq"
               className="text-[10px] font-medium text-white/40 transition-colors hover:text-white"
             >
               Rental Policy
-            </a>
+            </Link>
           </div>
         </div>
       </div>

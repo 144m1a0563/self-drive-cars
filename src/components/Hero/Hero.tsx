@@ -559,7 +559,7 @@ const Hero = () => {
 
       {/* Floating phone on left */}
       <motion.a
-        href="tel:+919052885299"
+        href="tel:+919603785823"
         aria-label="Call Cherry Cars"
         initial={{ opacity: 0, x: -30 }}
         animate={{ opacity: 1, x: 0 }}
@@ -597,7 +597,7 @@ const Hero = () => {
 
       {/* Floating WhatsApp on right */}
       <motion.a
-        href="https://wa.me/919052885299"
+        href="https://wa.me/919603785823"
         target="_blank"
         rel="noreferrer"
         aria-label="Book through WhatsApp"

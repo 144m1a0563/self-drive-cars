@@ -246,7 +246,7 @@ const BookingProcess = () => {
 
           <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
             <motion.a
-              href="tel:+919052885299"
+              href="tel:+919603785823"
               whileHover={{ y: -3 }}
               whileTap={{ scale: 0.97 }}
               className="flex items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-red-600/25 transition-colors hover:bg-white hover:text-black"
@@ -256,7 +256,7 @@ const BookingProcess = () => {
             </motion.a>
 
             <motion.a
-              href="https://wa.me/919052885299"
+              href="https://wa.me/919603785823"
               target="_blank"
               rel="noreferrer"
               whileHover={{ y: -3 }}

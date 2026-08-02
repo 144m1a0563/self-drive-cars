@@ -236,7 +236,7 @@ const WhyChooseUs = () => {
             </motion.a>
 
             <motion.a
-              href="tel:+919052885299"
+              href="tel:+919603785823"
               whileHover={{ y: -3 }}
               whileTap={{ scale: 0.97 }}
               className="flex items-center justify-center gap-3 rounded-xl border border-white/20 bg-white/10 px-6 py-4 text-[12px] font-semibold text-white backdrop-blur transition-colors hover:bg-white hover:text-black"
