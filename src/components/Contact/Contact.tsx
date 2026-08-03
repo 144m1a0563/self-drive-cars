@@ -2,7 +2,6 @@ import {
   useMemo,
   useState,
   type ChangeEvent,
-  type FormEvent,
 } from "react";
 
 import {
@@ -16,12 +15,10 @@ import {
   FaWhatsapp,
   FaClock,
   FaCheckCircle,
-  FaDatabase,
-  FaExclamationCircle,
 } from "react-icons/fa";
 
 import { motion } from "framer-motion";
-import { supabase } from "../../lib/supabase";
+import { cars } from "../../data/cars";
 
 interface FormData {
   name: string;
@@ -43,6 +40,12 @@ interface FormErrors {
   message?: string;
 }
 
+interface FormFieldProps {
+  label: string;
+  error?: string;
+  children: React.ReactNode;
+}
+
 const WHATSAPP_NUMBER = "919704143260";
 
 const initialFormData: FormData = {
@@ -55,23 +58,54 @@ const initialFormData: FormData = {
   message: "",
 };
 
+const FormField = ({
+  label,
+  error,
+  children,
+}: FormFieldProps) => {
+  return (
+    <div>
+      <label className="mb-2 block text-[11px] font-semibold text-gray-700">
+        {label}
+      </label>
+
+      <div
+        className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 transition-colors focus-within:bg-white ${
+          error
+            ? "border-red-400"
+            : "border-gray-200 focus-within:border-red-500"
+        }`}
+      >
+        {children}
+      </div>
+
+      {error && (
+        <p className="mt-1.5 text-[10px] font-medium text-red-500">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+};
+
 const Contact = () => {
   const [formData, setFormData] =
     useState<FormData>(initialFormData);
 
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [successMessage, setSuccessMessage] = useState("");
-  const [submitError, setSubmitError] = useState("");
+  const [errors, setErrors] =
+    useState<FormErrors>({});
+
+  const [successMessage, setSuccessMessage] =
+    useState("");
 
   const [whatsappLoading, setWhatsappLoading] =
     useState(false);
 
-  const [databaseLoading, setDatabaseLoading] =
-    useState(false);
-
   const minimumPickupDate = useMemo(() => {
     const today = new Date();
-    const timezoneOffset = today.getTimezoneOffset() * 60_000;
+
+    const timezoneOffset =
+      today.getTimezoneOffset() * 60_000;
 
     return new Date(today.getTime() - timezoneOffset)
       .toISOString()
@@ -80,7 +114,9 @@ const Contact = () => {
 
   const handleChange = (
     event: ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      HTMLInputElement |
+      HTMLTextAreaElement |
+      HTMLSelectElement
     >
   ) => {
     const { name, value } = event.target;
@@ -88,7 +124,9 @@ const Contact = () => {
     let cleanedValue = value;
 
     if (name === "phone") {
-      cleanedValue = value.replace(/\D/g, "").slice(0, 10);
+      cleanedValue = value
+        .replace(/\D/g, "")
+        .slice(0, 10);
     }
 
     if (name === "name") {
@@ -106,7 +144,6 @@ const Contact = () => {
     }));
 
     setSuccessMessage("");
-    setSubmitError("");
   };
 
   const validateForm = (): boolean => {
@@ -120,7 +157,8 @@ const Contact = () => {
     const message = formData.message.trim();
 
     if (!name) {
-      newErrors.name = "Please enter your full name";
+      newErrors.name =
+        "Please enter your full name";
     } else if (name.length < 3) {
       newErrors.name =
         "Name must contain at least 3 characters";
@@ -193,11 +231,11 @@ const Contact = () => {
 
   const focusFirstInvalidField = () => {
     window.setTimeout(() => {
-      const firstInvalidField = document.querySelector(
+      const invalidField = document.querySelector(
         "[aria-invalid='true']"
       ) as HTMLElement | null;
 
-      firstInvalidField?.focus();
+      invalidField?.focus();
     }, 0);
   };
 
@@ -217,7 +255,6 @@ const Contact = () => {
 
   const handleWhatsAppSubmit = () => {
     setSuccessMessage("");
-    setSubmitError("");
 
     if (!validateForm()) {
       focusFirstInvalidField();
@@ -233,9 +270,7 @@ const Contact = () => {
 📞 *Mobile Number:* ${formData.phone.trim()}
 📧 *Email:* ${formData.email.trim() || "Not provided"}
 🚘 *Selected Car:* ${formData.car}
-📅 *Pickup Date:* ${formatPickupDate(
-      formData.pickupDate
-    )}
+📅 *Pickup Date:* ${formatPickupDate(formData.pickupDate)}
 📍 *Pickup Location:* ${formData.pickupLocation.trim()}
 
 📝 *Trip Details:*
@@ -259,85 +294,25 @@ Please confirm vehicle availability, rental price and booking terms.
     }
 
     setSuccessMessage(
-      "WhatsApp has been opened with your booking details. Please press Send to complete the enquiry."
+      "WhatsApp has opened with your booking details. Please press Send to complete your enquiry."
     );
 
     setWhatsappLoading(false);
-  };
-
-  const handleDatabaseSubmit = async (
-    event: FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-
-    setSuccessMessage("");
-    setSubmitError("");
-
-    if (!validateForm()) {
-      focusFirstInvalidField();
-      return;
-    }
-
-    setDatabaseLoading(true);
-
-    try {
-      const bookingData = {
-        customer_name: formData.name.trim(),
-        mobile_number: formData.phone.trim(),
-        email: formData.email.trim() || null,
-        selected_car: formData.car,
-        pickup_date: formData.pickupDate,
-        pickup_location:
-          formData.pickupLocation.trim(),
-        trip_details: formData.message.trim(),
-        status: "pending",
-      };
-
-      const { error: insertError } = await supabase
-        .from("bookings")
-        .insert([bookingData]);
-
-      if (insertError) {
-        throw insertError;
-      }
-
-      setSuccessMessage(
-        "Your booking was saved successfully. Our team will contact you shortly."
-      );
-
-      setFormData(initialFormData);
-      setErrors({});
-    } catch (caughtError) {
-      console.error(
-        "Unable to save booking:",
-        caughtError
-      );
-
-      setSubmitError(
-        caughtError instanceof Error
-          ? caughtError.message
-          : "Unable to save your booking. Please try again."
-      );
-    } finally {
-      setDatabaseLoading(false);
-    }
   };
 
   const resetForm = () => {
     setFormData(initialFormData);
     setErrors({});
     setSuccessMessage("");
-    setSubmitError("");
+    setWhatsappLoading(false);
   };
-
-  const isSubmitting =
-    whatsappLoading || databaseLoading;
 
   return (
     <section
       id="contact"
       className="relative overflow-hidden bg-gradient-to-b from-white via-[#fffafa] to-white py-16 sm:py-20 lg:py-24"
     >
+      {/* Background decoration */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-32 top-16 h-[360px] w-[360px] rounded-full bg-red-100/60 blur-3xl" />
 
@@ -345,21 +320,40 @@ Please confirm vehicle availability, rental price and booking terms.
       </div>
 
       <div className="container-custom relative z-10">
+        {/* Heading */}
         <div className="mx-auto max-w-[850px] text-center">
           <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45 }}
+            initial={{
+              opacity: 0,
+              y: 18,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+            }}
+            transition={{
+              duration: 0.45,
+            }}
             className="text-[11px] font-bold uppercase tracking-[4px] text-red-600 sm:text-[13px] sm:tracking-[5px]"
           >
             Contact Us
           </motion.p>
 
           <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={{
+              opacity: 0,
+              y: 24,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+            }}
             transition={{
               duration: 0.55,
               delay: 0.08,
@@ -374,29 +368,47 @@ Please confirm vehicle availability, rental price and booking terms.
           </motion.h2>
 
           <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={{
+              opacity: 0,
+              y: 18,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+            }}
             transition={{
               duration: 0.5,
               delay: 0.16,
             }}
             className="mx-auto mt-5 max-w-[720px] text-[13px] leading-7 text-gray-500 sm:text-[15px]"
           >
-            Send your enquiry through WhatsApp or save
-            your booking directly to our database.
+            Complete the enquiry form and send all your
+            booking details directly through WhatsApp.
           </motion.p>
         </div>
 
+        {/* Main layout */}
         <div className="mt-12 grid grid-cols-1 gap-7 lg:mt-14 lg:grid-cols-[38%_62%] lg:gap-8 xl:gap-10">
+          {/* Contact details */}
           <motion.aside
-            initial={{ opacity: 0, x: -35 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{
+              opacity: 0,
+              x: -35,
+            }}
+            whileInView={{
+              opacity: 1,
+              x: 0,
+            }}
             viewport={{
               once: true,
               amount: 0.2,
             }}
-            transition={{ duration: 0.6 }}
+            transition={{
+              duration: 0.6,
+            }}
             className="relative overflow-hidden rounded-[28px] bg-[#07182f] p-6 text-white sm:p-8 lg:p-9"
           >
             <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-red-600/20 blur-3xl" />
@@ -504,14 +516,23 @@ Please confirm vehicle availability, rental price and booking terms.
             </div>
           </motion.aside>
 
+          {/* Booking form */}
           <motion.div
-            initial={{ opacity: 0, x: 35 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{
+              opacity: 0,
+              x: 35,
+            }}
+            whileInView={{
+              opacity: 1,
+              x: 0,
+            }}
             viewport={{
               once: true,
               amount: 0.15,
             }}
-            transition={{ duration: 0.6 }}
+            transition={{
+              duration: 0.6,
+            }}
             className="rounded-[28px] border border-gray-100 bg-white p-5 shadow-[0_20px_65px_rgba(0,0,0,0.07)] sm:p-7 lg:p-8 xl:p-10"
           >
             <div className="mb-7">
@@ -525,271 +546,145 @@ Please confirm vehicle availability, rental price and booking terms.
             </div>
 
             <form
-              onSubmit={handleDatabaseSubmit}
+              onSubmit={(event) => {
+                event.preventDefault();
+                handleWhatsAppSubmit();
+              }}
               noValidate
             >
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="mb-2 block text-[11px] font-semibold text-gray-700"
+                <FormField
+                  label="Full Name"
+                  error={errors.name}
+                >
+                  <FaUser className="shrink-0 text-red-500" />
+
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    aria-invalid={Boolean(errors.name)}
+                    placeholder="Enter your full name"
+                    className="h-[52px] w-full bg-transparent text-[12px] text-gray-900 outline-none placeholder:text-gray-400"
+                  />
+                </FormField>
+
+                <FormField
+                  label="Mobile Number"
+                  error={errors.phone}
+                >
+                  <FaPhoneAlt className="shrink-0 text-red-500" />
+
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    maxLength={10}
+                    value={formData.phone}
+                    onChange={handleChange}
+                    aria-invalid={Boolean(errors.phone)}
+                    placeholder="10-digit mobile number"
+                    className="h-[52px] w-full bg-transparent text-[12px] text-gray-900 outline-none placeholder:text-gray-400"
+                  />
+                </FormField>
+
+                <FormField
+                  label="Email Address (Optional)"
+                  error={errors.email}
+                >
+                  <FaEnvelope className="shrink-0 text-red-500" />
+
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    aria-invalid={Boolean(errors.email)}
+                    placeholder="Enter your email"
+                    className="h-[52px] w-full bg-transparent text-[12px] text-gray-900 outline-none placeholder:text-gray-400"
+                  />
+                </FormField>
+
+                <FormField
+                  label="Select Car"
+                  error={errors.car}
+                >
+                  <FaCarSide className="shrink-0 text-red-500" />
+
+                  <select
+                    id="car"
+                    name="car"
+                    value={formData.car}
+                    onChange={handleChange}
+                    aria-invalid={Boolean(errors.car)}
+                    className="h-[52px] w-full cursor-pointer bg-transparent text-[12px] text-gray-900 outline-none"
                   >
-                    Full Name
-                  </label>
+                    <option value="">
+                      Choose a car
+                    </option>
 
-                  <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
-                      errors.name
-                        ? "border-red-400"
-                        : "border-gray-200 focus-within:border-red-500"
-                    }`}
-                  >
-                    <FaUser className="shrink-0 text-red-500" />
-
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      autoComplete="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      aria-invalid={Boolean(errors.name)}
-                      placeholder="Enter your full name"
-                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
-                    />
-                  </div>
-
-                  {errors.name && (
-                    <p className="mt-1.5 text-[10px] text-red-500">
-                      {errors.name}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="phone"
-                    className="mb-2 block text-[11px] font-semibold text-gray-700"
-                  >
-                    Mobile Number
-                  </label>
-
-                  <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
-                      errors.phone
-                        ? "border-red-400"
-                        : "border-gray-200 focus-within:border-red-500"
-                    }`}
-                  >
-                    <FaPhoneAlt className="shrink-0 text-red-500" />
-
-                    <input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      inputMode="numeric"
-                      maxLength={10}
-                      value={formData.phone}
-                      onChange={handleChange}
-                      aria-invalid={Boolean(errors.phone)}
-                      placeholder="10-digit mobile number"
-                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
-                    />
-                  </div>
-
-                  {errors.phone && (
-                    <p className="mt-1.5 text-[10px] text-red-500">
-                      {errors.phone}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="mb-2 block text-[11px] font-semibold text-gray-700"
-                  >
-                    Email Address
-
-                    <span className="ml-1 font-normal text-gray-400">
-                      Optional
-                    </span>
-                  </label>
-
-                  <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
-                      errors.email
-                        ? "border-red-400"
-                        : "border-gray-200 focus-within:border-red-500"
-                    }`}
-                  >
-                    <FaEnvelope className="shrink-0 text-red-500" />
-
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      aria-invalid={Boolean(errors.email)}
-                      placeholder="Enter your email"
-                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
-                    />
-                  </div>
-
-                  {errors.email && (
-                    <p className="mt-1.5 text-[10px] text-red-500">
-                      {errors.email}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="car"
-                    className="mb-2 block text-[11px] font-semibold text-gray-700"
-                  >
-                    Select Car
-                  </label>
-
-                  <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
-                      errors.car
-                        ? "border-red-400"
-                        : "border-gray-200 focus-within:border-red-500"
-                    }`}
-                  >
-                    <FaCarSide className="shrink-0 text-red-500" />
-
-                    <select
-                      id="car"
-                      name="car"
-                      value={formData.car}
-                      onChange={handleChange}
-                      aria-invalid={Boolean(errors.car)}
-                      className="h-[52px] w-full cursor-pointer bg-transparent text-[12px] outline-none"
-                    >
-                      <option value="">
-                        Choose a car
+                    {cars.map((car) => (
+                      <option
+                        key={car.id}
+                        value={car.name}
+                      >
+                        {car.name}
                       </option>
+                    ))}
+                  </select>
+                </FormField>
 
-                      <option value="Maruti Swift">
-                        Maruti Swift
-                      </option>
+                <FormField
+                  label="Pickup Date"
+                  error={errors.pickupDate}
+                >
+                  <FaCalendarAlt className="shrink-0 text-red-500" />
 
-                      <option value="Maruti Baleno">
-                        Maruti Baleno
-                      </option>
-
-                      <option value="Maruti Dzire">
-                        Maruti Dzire
-                      </option>
-
-                      <option value="Maruti Ertiga">
-                        Maruti Ertiga
-                      </option>
-
-                      <option value="Toyota Innova">
-                        Toyota Innova
-                      </option>
-
-                      <option value="Kia Carens">
-                        Kia Carens
-                      </option>
-
-                      <option value="Toyota Fortuner">
-                        Toyota Fortuner
-                      </option>
-                    </select>
-                  </div>
-
-                  {errors.car && (
-                    <p className="mt-1.5 text-[10px] text-red-500">
-                      {errors.car}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="pickupDate"
-                    className="mb-2 block text-[11px] font-semibold text-gray-700"
-                  >
-                    Pickup Date
-                  </label>
-
-                  <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
+                  <input
+                    id="pickupDate"
+                    name="pickupDate"
+                    type="date"
+                    min={minimumPickupDate}
+                    value={formData.pickupDate}
+                    onChange={handleChange}
+                    aria-invalid={Boolean(
                       errors.pickupDate
-                        ? "border-red-400"
-                        : "border-gray-200 focus-within:border-red-500"
-                    }`}
-                  >
-                    <FaCalendarAlt className="shrink-0 text-red-500" />
+                    )}
+                    className="h-[52px] w-full bg-transparent text-[12px] text-gray-900 outline-none"
+                  />
+                </FormField>
 
-                    <input
-                      id="pickupDate"
-                      name="pickupDate"
-                      type="date"
-                      min={minimumPickupDate}
-                      value={formData.pickupDate}
-                      onChange={handleChange}
-                      aria-invalid={Boolean(
-                        errors.pickupDate
-                      )}
-                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
-                    />
-                  </div>
+                <FormField
+                  label="Pickup Location"
+                  error={errors.pickupLocation}
+                >
+                  <FaMapMarkerAlt className="shrink-0 text-red-500" />
 
-                  {errors.pickupDate && (
-                    <p className="mt-1.5 text-[10px] text-red-500">
-                      {errors.pickupDate}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="pickupLocation"
-                    className="mb-2 block text-[11px] font-semibold text-gray-700"
-                  >
-                    Pickup Location
-                  </label>
-
-                  <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
+                  <input
+                    id="pickupLocation"
+                    name="pickupLocation"
+                    type="text"
+                    value={formData.pickupLocation}
+                    onChange={handleChange}
+                    aria-invalid={Boolean(
                       errors.pickupLocation
-                        ? "border-red-400"
-                        : "border-gray-200 focus-within:border-red-500"
-                    }`}
-                  >
-                    <FaMapMarkerAlt className="shrink-0 text-red-500" />
-
-                    <input
-                      id="pickupLocation"
-                      name="pickupLocation"
-                      type="text"
-                      value={formData.pickupLocation}
-                      onChange={handleChange}
-                      aria-invalid={Boolean(
-                        errors.pickupLocation
-                      )}
-                      placeholder="Enter pickup location"
-                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
-                    />
-                  </div>
-
-                  {errors.pickupLocation && (
-                    <p className="mt-1.5 text-[10px] text-red-500">
-                      {errors.pickupLocation}
-                    </p>
-                  )}
-                </div>
+                    )}
+                    placeholder="Enter pickup location"
+                    className="h-[52px] w-full bg-transparent text-[12px] text-gray-900 outline-none placeholder:text-gray-400"
+                  />
+                </FormField>
               </div>
 
+              {/* Trip details */}
               <div className="mt-5">
-                <div className="mb-2 flex items-center justify-between">
+                <div className="mb-2 flex items-center justify-between gap-3">
                   <label
                     htmlFor="message"
                     className="text-[11px] font-semibold text-gray-700"
@@ -809,7 +704,7 @@ Please confirm vehicle availability, rental price and booking terms.
                 </div>
 
                 <div
-                  className={`flex items-start gap-3 rounded-xl border bg-gray-50 px-4 py-4 focus-within:bg-white ${
+                  className={`flex items-start gap-3 rounded-xl border bg-gray-50 px-4 py-4 transition-colors focus-within:bg-white ${
                     errors.message
                       ? "border-red-400"
                       : "border-gray-200 focus-within:border-red-500"
@@ -825,47 +720,39 @@ Please confirm vehicle availability, rental price and booking terms.
                     value={formData.message}
                     onChange={handleChange}
                     aria-invalid={Boolean(errors.message)}
-                    placeholder="Mention destination, return date and requirements"
-                    className="w-full resize-none bg-transparent text-[12px] leading-6 outline-none"
+                    placeholder="Mention destination, return date, passengers and other requirements"
+                    className="w-full resize-none bg-transparent text-[12px] leading-6 text-gray-900 outline-none placeholder:text-gray-400"
                   />
                 </div>
 
                 {errors.message && (
-                  <p className="mt-1.5 text-[10px] text-red-500">
+                  <p className="mt-1.5 text-[10px] font-medium text-red-500">
                     {errors.message}
                   </p>
                 )}
               </div>
 
+              {/* Success */}
               {successMessage && (
                 <div
                   role="status"
-                  className="mt-5 flex gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-[11px] text-green-700"
+                  className="mt-5 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-[11px] font-medium leading-5 text-green-700"
                 >
-                  <FaCheckCircle className="mt-0.5 shrink-0" />
+                  <FaCheckCircle className="mt-0.5 shrink-0 text-[15px]" />
 
                   <span>{successMessage}</span>
                 </div>
               )}
 
-              {submitError && (
-                <div
-                  role="alert"
-                  className="mt-5 flex gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[11px] text-red-700"
-                >
-                  <FaExclamationCircle className="mt-0.5 shrink-0" />
-
-                  <span>{submitError}</span>
-                </div>
-              )}
-
-              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {/* Buttons */}
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  type="button"
-                  onClick={handleWhatsAppSubmit}
-                  disabled={isSubmitting}
-                  className="flex items-center justify-center gap-3 rounded-xl bg-green-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-green-600/20 transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+                  whileTap={{
+                    scale: 0.98,
+                  }}
+                  type="submit"
+                  disabled={whatsappLoading}
+                  className="flex flex-1 items-center justify-center gap-3 rounded-xl bg-green-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-green-600/20 transition-all hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {whatsappLoading ? (
                     <>
@@ -875,48 +762,26 @@ Please confirm vehicle availability, rental price and booking terms.
                     </>
                   ) : (
                     <>
-                      Send on WhatsApp
+                      Send Enquiry on WhatsApp
 
                       <FaWhatsapp size={18} />
                     </>
                   )}
                 </motion.button>
 
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-red-600/20 transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  disabled={whatsappLoading}
+                  className="rounded-xl border border-gray-200 bg-white px-6 py-4 text-[12px] font-semibold text-gray-600 transition-all hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {databaseLoading ? (
-                    <>
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-
-                      Saving Booking...
-                    </>
-                  ) : (
-                    <>
-                      Save Booking
-
-                      <FaDatabase size={15} />
-                    </>
-                  )}
-                </motion.button>
+                  Clear Form
+                </button>
               </div>
 
-              <button
-                type="button"
-                onClick={resetForm}
-                disabled={isSubmitting}
-                className="mt-3 w-full rounded-xl border border-gray-200 bg-white px-6 py-3.5 text-[12px] font-semibold text-gray-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                Clear Form
-              </button>
-
               <p className="mt-4 text-center text-[10px] leading-5 text-gray-400">
-                Use WhatsApp for instant contact or Save
-                Booking to submit your enquiry directly to
-                our database.
+                WhatsApp will open with all your booking
+                details. Press Send to complete the enquiry.
               </p>
             </form>
           </motion.div>
