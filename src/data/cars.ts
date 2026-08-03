@@ -1,3 +1,12 @@
+export interface RentalPackage {
+  duration: "12 Hours" | "24 Hours";
+  price: number;
+  includedKm: number;
+
+  // Not specified in the handwritten price list
+  extraKmCharge?: number;
+}
+
 export interface Car {
   id: number;
   slug: string;
@@ -5,7 +14,15 @@ export interface Car {
   brand: string;
   category: "Hatchback" | "Sedan" | "SUV" | "MUV";
   image: string;
+
+  /**
+   * Starting price shown on fleet cards.
+   * This should normally be the lowest rental-package price.
+   */
   price: number;
+
+  rentalPackages: RentalPackage[];
+
   seats: number;
   fuel: string;
   transmission: string;
@@ -22,136 +39,212 @@ export interface Car {
 export const cars: Car[] = [
   {
     id: 1,
-    slug: "maruti-swift",
-    name: "Maruti Swift",
-    brand: "Suzuki",
-    category: "Hatchback",
+    slug: "maruti-dzire",
+    name: "Maruti Dzire",
+    brand: "Maruti Suzuki",
+    category: "Sedan",
     image:
-      "https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1400&q=90",
-    price: 1800,
+      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1400&q=90",
+
+    price: 2000,
+
+    rentalPackages: [
+      {
+        duration: "12 Hours",
+        price: 2000,
+        includedKm: 250,
+      },
+      {
+        duration: "24 Hours",
+        price: 2500,
+        includedKm: 300,
+      },
+    ],
+
     seats: 5,
     fuel: "Petrol",
     transmission: "Manual",
-    engine: "1.2L DualJet",
-    mileage: "22.5 km/l",
-    safety: "6 Airbags",
-    bootSpace: "268 L",
+    engine: "1.2L Petrol",
+    mileage: "22.4 km/l",
+    safety: "Dual Airbags",
+    bootSpace: "378 L",
     airConditioning: "Automatic Climate Control",
+
     description:
-      "The Maruti Swift is a stylish and efficient hatchback offering smooth handling, excellent mileage and comfortable city driving.",
+      "The Maruti Dzire is a comfortable and fuel-efficient sedan suitable for city trips, airport transfers, business travel and outstation journeys.",
+
     features: [
       "Touchscreen Infotainment",
       "Automatic Climate Control",
-      "LED Headlamps",
-      "Rear View Camera",
-      "Keyless Entry",
-      "6 Airbags",
+      "Rear Parking Sensors",
+      "Power Windows",
+      "Comfortable Seating",
+      "ABS with EBD",
     ],
+
     tripTypes: [
-      "City Tours",
-      "Shopping Trips",
+      "City Travel",
       "Airport Transfers",
+      "Business Trips",
     ],
   },
+
   {
     id: 2,
     slug: "maruti-baleno",
     name: "Maruti Baleno",
-    brand: "Suzuki",
+    brand: "Maruti Suzuki",
     category: "Hatchback",
     image:
       "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1400&q=90",
+
     price: 2000,
+
+    rentalPackages: [
+      {
+        duration: "12 Hours",
+        price: 2000,
+        includedKm: 250,
+      },
+      {
+        duration: "24 Hours",
+        price: 2500,
+        includedKm: 300,
+      },
+    ],
+
     seats: 5,
     fuel: "Petrol",
     transmission: "Manual",
     engine: "1.2L DualJet",
     mileage: "22.3 km/l",
-    safety: "6 Airbags",
-    bootSpace: "339 L",
+    safety: "Dual Airbags",
+    bootSpace: "318 L",
     airConditioning: "Automatic Climate Control",
+
     description:
-      "The Maruti Baleno is a spacious premium hatchback with a smooth drive, comfortable cabin and useful modern features.",
+      "The Maruti Baleno is a spacious premium hatchback offering a smooth drive, comfortable cabin and practical features for city and highway travel.",
+
     features: [
       "Touchscreen Infotainment",
       "Automatic Climate Control",
       "LED Headlamps",
-      "Rear View Camera",
+      "Rear Parking Sensors",
       "Keyless Entry",
-      "6 Airbags",
+      "ABS with EBD",
     ],
+
     tripTypes: [
       "Family City Tours",
       "Shopping Trips",
       "Airport Transfers",
     ],
   },
+
   {
     id: 3,
-    slug: "maruti-dzire",
-    name: "Maruti Dzire",
-    brand: "Suzuki",
-    category: "Sedan",
+    slug: "toyota-glanza",
+    name: "Toyota Glanza",
+    brand: "Toyota",
+    category: "Hatchback",
     image:
-      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1400&q=90",
-    price: 2200,
+      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1400&q=90",
+
+    price: 2000,
+
+    rentalPackages: [
+      {
+        duration: "12 Hours",
+        price: 2000,
+        includedKm: 250,
+      },
+      {
+        duration: "24 Hours",
+        price: 2500,
+        includedKm: 300,
+      },
+    ],
+
     seats: 5,
     fuel: "Petrol",
     transmission: "Manual",
     engine: "1.2L Petrol",
-    mileage: "22.4 km/l",
-    safety: "6 Airbags",
-    bootSpace: "378 L",
+    mileage: "22.3 km/l",
+    safety: "Dual Airbags",
+    bootSpace: "318 L",
     airConditioning: "Automatic Climate Control",
+
     description:
-      "The Maruti Dzire is a comfortable and fuel-efficient sedan suitable for airport transfers, business journeys and outstation travel.",
+      "The Toyota Glanza is a refined premium hatchback with a spacious cabin, efficient petrol engine and comfortable ride for daily and long-distance travel.",
+
     features: [
       "Touchscreen Infotainment",
-      "Push Button Start",
+      "Automatic Climate Control",
       "LED Headlamps",
-      "Rear Parking Camera",
-      "Cruise Control",
-      "6 Airbags",
+      "Rear Parking Sensors",
+      "Push Button Start",
+      "ABS with EBD",
     ],
+
     tripTypes: [
-      "Business Travel",
+      "City Tours",
+      "Weekend Trips",
       "Airport Transfers",
-      "Outstation Trips",
     ],
   },
+
   {
     id: 4,
     slug: "maruti-ertiga",
     name: "Maruti Ertiga",
-    brand: "Suzuki",
+    brand: "Maruti Suzuki",
     category: "MUV",
     image:
       "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1400&q=90",
-    price: 3200,
+
+    price: 3000,
+
+    rentalPackages: [
+      {
+        duration: "12 Hours",
+        price: 3000,
+        includedKm: 250,
+      },
+      {
+        duration: "24 Hours",
+        price: 3500,
+        includedKm: 300,
+      },
+    ],
+
     seats: 7,
     fuel: "Petrol",
     transmission: "Manual",
     engine: "1.5L Petrol",
     mileage: "20.3 km/l",
-    safety: "4 Airbags",
+    safety: "Dual Airbags",
     bootSpace: "209 L",
     airConditioning: "Rear AC Vents",
+
     description:
-      "The Maruti Ertiga is a spacious seven-seater designed for family trips, group travel and temple tours.",
+      "The Maruti Ertiga is a spacious seven-seater designed for family trips, temple visits, airport travel and comfortable group journeys.",
+
     features: [
       "Touchscreen Infotainment",
       "Rear AC Vents",
-      "Cruise Control",
-      "Parking Camera",
       "Flexible Seating",
+      "Rear Parking Sensors",
+      "Power Windows",
       "ABS with EBD",
     ],
+
     tripTypes: [
       "Family Trips",
       "Temple Tours",
       "Group Travel",
     ],
   },
+
   {
     id: 5,
     slug: "toyota-innova",
@@ -160,64 +253,102 @@ export const cars: Car[] = [
     category: "MUV",
     image:
       "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1400&q=90",
-    price: 4200,
+
+    price: 3000,
+
+    rentalPackages: [
+      {
+        duration: "12 Hours",
+        price: 3000,
+        includedKm: 250,
+      },
+      {
+        duration: "24 Hours",
+        price: 3500,
+        includedKm: 300,
+      },
+    ],
+
+    seats: 7,
+    fuel: "Diesel",
+    transmission: "Manual",
+    engine: "2.5L Diesel",
+    mileage: "13 km/l",
+    safety: "Dual Airbags",
+    bootSpace: "300 L",
+    airConditioning: "Front and Rear AC",
+
+    description:
+      "The Toyota Innova provides spacious seating, dependable diesel performance and excellent comfort for families and long-distance journeys.",
+
+    features: [
+      "Spacious Seven-Seater Cabin",
+      "Front and Rear AC",
+      "Comfortable Seating",
+      "Power Windows",
+      "Rear Parking Sensors",
+      "ABS with EBD",
+    ],
+
+    tripTypes: [
+      "Long-Distance Trips",
+      "Family Travel",
+      "Temple Tours",
+    ],
+  },
+
+  {
+    id: 6,
+    slug: "toyota-innova-crysta",
+    name: "Toyota Innova Crysta",
+    brand: "Toyota",
+    category: "MUV",
+    image:
+      "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1400&q=90",
+
+    price: 3500,
+
+    rentalPackages: [
+      {
+        duration: "12 Hours",
+        price: 3500,
+        includedKm: 250,
+      },
+      {
+        duration: "24 Hours",
+        price: 4000,
+        includedKm: 300,
+      },
+    ],
+
     seats: 7,
     fuel: "Diesel",
     transmission: "Manual",
     engine: "2.4L Diesel",
-    mileage: "15.6 km/l",
-    safety: "7 Airbags",
+    mileage: "15.3 km/l",
+    safety: "Multiple Airbags",
     bootSpace: "300 L",
     airConditioning: "Automatic Climate Control",
+
     description:
-      "The Toyota Innova offers premium comfort, powerful performance and spacious seating for long-distance travel.",
+      "The Toyota Innova Crysta is a premium seven-seater with powerful performance, refined interiors and excellent comfort for long journeys.",
+
     features: [
       "Premium Infotainment",
       "Automatic Climate Control",
       "Captain Seats",
-      "Rear View Camera",
+      "Rear Parking Camera",
       "Cruise Control",
-      "7 Airbags",
+      "Multiple Airbags",
     ],
+
     tripTypes: [
-      "Long Distance Trips",
-      "Family Travel",
-      "Premium Tours",
+      "Premium Family Tours",
+      "Long-Distance Trips",
+      "Business Travel",
     ],
   },
-  {
-    id: 6,
-    slug: "kia-carens",
-    name: "Kia Carens",
-    brand: "Kia",
-    category: "MUV",
-    image:
-      "https://images.unsplash.com/photo-1511527844068-006b95d162c2?auto=format&fit=crop&w=1400&q=90",
-    price: 4000,
-    seats: 7,
-    fuel: "Diesel",
-    transmission: "Automatic",
-    engine: "1.5L Diesel",
-    mileage: "18 km/l",
-    safety: "6 Airbags",
-    bootSpace: "216 L",
-    airConditioning: "Automatic Climate Control",
-    description:
-      "The Kia Carens combines spacious seating, premium comfort and modern technology for family and group travel.",
-    features: [
-      "Touchscreen Infotainment",
-      "Rear AC Vents",
-      "Wireless Charging",
-      "Parking Camera",
-      "Cruise Control",
-      "6 Airbags",
-    ],
-    tripTypes: [
-      "Family Trips",
-      "Group Travel",
-      "Long Journeys",
-    ],
-  },
+
   {
     id: 7,
     slug: "toyota-fortuner",
@@ -226,25 +357,43 @@ export const cars: Car[] = [
     category: "SUV",
     image:
       "https://images.unsplash.com/photo-1511527844068-006b95d162c2?auto=format&fit=crop&w=1400&q=90",
-    price: 6500,
+
+    price: 4000,
+
+    rentalPackages: [
+      {
+        duration: "12 Hours",
+        price: 4000,
+        includedKm: 250,
+      },
+      {
+        duration: "24 Hours",
+        price: 4500,
+        includedKm: 300,
+      },
+    ],
+
     seats: 7,
     fuel: "Diesel",
     transmission: "Automatic",
     engine: "2.8L Diesel",
     mileage: "14.4 km/l",
-    safety: "7 Airbags",
+    safety: "Multiple Airbags",
     bootSpace: "296 L",
-    airConditioning: "Dual Zone Climate Control",
+    airConditioning: "Dual-Zone Climate Control",
+
     description:
-      "The Toyota Fortuner is a premium and powerful SUV suited for highway journeys, family vacations and adventure travel.",
+      "The Toyota Fortuner is a powerful premium SUV suited for highway journeys, family vacations, business travel and adventure trips.",
+
     features: [
       "Touchscreen Infotainment",
-      "4x4 Capability",
+      "Powerful Diesel Engine",
       "Cruise Control",
-      "Parking Camera",
-      "Leather Seats",
-      "7 Airbags",
+      "Rear Parking Camera",
+      "Premium Leather Seats",
+      "Multiple Airbags",
     ],
+
     tripTypes: [
       "Adventure Trips",
       "Highway Travel",

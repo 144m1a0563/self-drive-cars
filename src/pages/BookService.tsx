@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import {
   FaCarSide,
-  FaCheckCircle,
   FaPhoneAlt,
   FaWhatsapp,
   FaFileAlt,

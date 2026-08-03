@@ -2,19 +2,28 @@ import {
   FaArrowLeft,
   FaCarSide,
   FaCheck,
+  FaClock,
   FaCogs,
   FaGasPump,
   FaPhoneAlt,
+  FaRoad,
   FaShieldAlt,
   FaSuitcase,
   FaUsers,
   FaWhatsapp,
   FaWind,
 } from "react-icons/fa";
-import { Link, Navigate, useParams } from "react-router-dom";
-import { motion } from "framer-motion";
 
+import {
+  Link,
+  Navigate,
+  useParams,
+} from "react-router-dom";
+
+import { motion } from "framer-motion";
 import { cars } from "../data/cars";
+
+const WHATSAPP_NUMBER = "919704143260";
 
 const CarDetailsPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -62,11 +71,49 @@ const CarDetailsPage = () => {
     },
   ];
 
+  const createWhatsAppUrl = (
+    duration?: string,
+    price?: number,
+    includedKm?: number
+  ) => {
+    const message = duration
+      ? `
+Hello Vamsi Self Drive Cars,
+
+I would like to book the following car:
+
+Car: ${car.name}
+Package: ${duration}
+Price: ₹${price?.toLocaleString("en-IN")}
+Included Distance: ${includedKm} KM
+
+Please confirm availability and booking details.
+        `.trim()
+      : `
+Hello Vamsi Self Drive Cars,
+
+I would like to book ${car.name}.
+
+Please confirm availability, rental price and booking details.
+        `.trim();
+
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      message
+    )}`;
+  };
+
   return (
     <main className="bg-white">
-      {/* Car details */}
+      {/* Main vehicle details */}
       <section className="relative overflow-hidden py-10 sm:py-14 lg:py-16">
-        <div className="container-custom">
+        {/* Background decoration */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -left-40 top-10 h-[380px] w-[380px] rounded-full bg-red-50 blur-3xl" />
+
+          <div className="absolute -right-40 bottom-0 h-[400px] w-[400px] rounded-full bg-orange-50 blur-3xl" />
+        </div>
+
+        <div className="container-custom relative z-10">
           <Link
             to="/cars"
             className="inline-flex items-center gap-3 text-[12px] font-bold uppercase tracking-[2px] text-red-600 transition-colors hover:text-black"
@@ -76,11 +123,19 @@ const CarDetailsPage = () => {
           </Link>
 
           <div className="mt-9 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
-            {/* Image */}
+            {/* Vehicle image */}
             <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
+              initial={{
+                opacity: 0,
+                x: -40,
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+              }}
+              transition={{
+                duration: 0.6,
+              }}
             >
               <div className="relative min-h-[340px] overflow-hidden rounded-[28px] bg-gray-100 shadow-[0_24px_70px_rgba(0,0,0,0.08)] sm:min-h-[450px]">
                 <img
@@ -89,7 +144,7 @@ const CarDetailsPage = () => {
                   className="absolute inset-0 h-full w-full object-cover"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
 
                 <div className="absolute left-5 top-5 space-y-2">
                   <span className="block w-fit rounded-lg bg-red-600 px-4 py-2 text-[10px] font-bold uppercase tracking-[1px] text-white">
@@ -100,14 +155,42 @@ const CarDetailsPage = () => {
                     {car.brand}
                   </span>
                 </div>
+
+                <div className="absolute bottom-6 left-6 right-6 rounded-[20px] border border-white/20 bg-black/45 p-5 text-white backdrop-blur-md">
+                  <p className="text-[9px] font-bold uppercase tracking-[2px] text-white/65">
+                    Starting From
+                  </p>
+
+                  <p className="mt-2 text-[28px] font-extrabold">
+                    ₹
+                    {Math.min(
+                      ...car.rentalPackages.map(
+                        (rentalPackage) =>
+                          rentalPackage.price
+                      )
+                    ).toLocaleString("en-IN")}
+
+                    <span className="ml-2 text-[11px] font-medium text-white/65">
+                      onwards
+                    </span>
+                  </p>
+                </div>
               </div>
             </motion.div>
 
-            {/* Information */}
+            {/* Vehicle information */}
             <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
+              initial={{
+                opacity: 0,
+                x: 40,
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+              }}
+              transition={{
+                duration: 0.6,
+              }}
             >
               <p className="text-[11px] font-bold uppercase tracking-[5px] text-red-600 sm:text-[13px]">
                 Vehicle Details
@@ -121,11 +204,12 @@ const CarDetailsPage = () => {
                 {car.description}
               </p>
 
+              {/* Specifications */}
               <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
                 {specifications.map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-[20px] border border-gray-200 bg-[#fafafa] p-4 sm:p-5"
+                    className="rounded-[20px] border border-gray-200 bg-[#fafafa] p-4 transition-all duration-300 hover:-translate-y-1 hover:border-red-200 hover:bg-white hover:shadow-lg sm:p-5"
                   >
                     <span className="text-[19px] text-red-600">
                       {item.icon}
@@ -142,13 +226,12 @@ const CarDetailsPage = () => {
                 ))}
               </div>
 
+              {/* Booking buttons */}
               <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <a
-                  href={`https://wa.me/919704143260?text=${encodeURIComponent(
-                    `Hello, I want to book ${car.name}.`
-                  )}`}
+                  href={createWhatsAppUrl()}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="flex items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-5 text-[12px] font-bold uppercase tracking-[1px] text-white shadow-lg shadow-red-600/20 transition-colors hover:bg-black"
                 >
                   <FaWhatsapp size={20} />
@@ -168,10 +251,199 @@ const CarDetailsPage = () => {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Rental packages */}
+      <section className="bg-[#07182f] py-16 text-white sm:py-20">
+        <div className="container-custom">
+          <div className="mx-auto max-w-[850px] text-center">
+            <motion.p
+              initial={{
+                opacity: 0,
+                y: 15,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+              }}
+              className="text-[11px] font-bold uppercase tracking-[5px] text-red-400"
+            >
+              Rental Packages
+            </motion.p>
+
+            <motion.h2
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                delay: 0.1,
+              }}
+              className="mt-4 text-[36px] font-extrabold uppercase leading-[1.05] sm:text-[48px] lg:text-[58px]"
+            >
+              Choose Your
+              <span className="block text-red-500">
+                Rental Plan
+              </span>
+            </motion.h2>
+
+            <p className="mx-auto mt-5 max-w-[650px] text-[13px] leading-7 text-white/55 sm:text-[15px]">
+              Select the package that matches your journey.
+              Extra kilometre charges apply after the included
+              kilometre limit.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-12 grid max-w-[1050px] grid-cols-1 gap-6 md:grid-cols-2">
+            {car.rentalPackages.map(
+              (rentalPackage, index) => (
+                <motion.article
+                  key={rentalPackage.duration}
+                  initial={{
+                    opacity: 0,
+                    y: 35,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  viewport={{
+                    once: true,
+                    amount: 0.2,
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.1,
+                  }}
+                  whileHover={{
+                    y: -8,
+                  }}
+                  className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.06] p-6 backdrop-blur-md transition-all hover:border-red-500/40 hover:bg-white/[0.09] sm:p-8"
+                >
+                  <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-red-600/15 blur-3xl" />
+
+                  <div className="relative z-10">
+                    <div className="flex items-start justify-between gap-5">
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[2.5px] text-red-400">
+                          Rental Duration
+                        </p>
+
+                        <h3 className="mt-3 text-[30px] font-extrabold uppercase sm:text-[36px]">
+                          {rentalPackage.duration}
+                        </h3>
+                      </div>
+
+                      <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-red-600 text-[22px] text-white shadow-lg shadow-red-600/25">
+                        <FaClock />
+                      </span>
+                    </div>
+
+                    <div className="mt-8 border-b border-white/10 pb-7">
+                      <p className="text-[10px] font-semibold uppercase tracking-[2px] text-white/40">
+                        Package Price
+                      </p>
+
+                      <p className="mt-2 text-[42px] font-extrabold leading-none text-white sm:text-[48px]">
+                        ₹
+                        {rentalPackage.price.toLocaleString(
+                          "en-IN"
+                        )}
+                      </p>
+                    </div>
+
+                    <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-5">
+                        <span className="text-[20px] text-red-400">
+                          <FaRoad />
+                        </span>
+
+                        <p className="mt-4 text-[9px] font-bold uppercase tracking-[1.8px] text-white/40">
+                          Included KM
+                        </p>
+
+                        <p className="mt-2 text-[22px] font-extrabold">
+                          {rentalPackage.includedKm} KM
+                        </p>
+                      </div>
+
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-5">
+                        <span className="text-[20px] text-red-400">
+                          <FaCarSide />
+                        </span>
+
+                        <p className="mt-4 text-[9px] font-bold uppercase tracking-[1.8px] text-white/40">
+                          Extra KM
+                        </p>
+
+                        <p className="mt-2 text-[22px] font-extrabold">
+                          ₹
+                          {rentalPackage.extraKmCharge}
+                          <span className="text-[11px] font-medium text-white/45">
+                            /KM
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-7 space-y-3">
+                      {[
+                        "Fuel charges are not included",
+                        "Valid driving licence is required",
+                        "Security deposit may apply",
+                      ].map((information) => (
+                        <div
+                          key={information}
+                          className="flex items-center gap-3 text-[12px] text-white/60"
+                        >
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-600/15 text-[9px] text-red-400">
+                            <FaCheck />
+                          </span>
+
+                          {information}
+                        </div>
+                      ))}
+                    </div>
+
+                    <a
+                      href={createWhatsAppUrl(
+                        rentalPackage.duration,
+                        rentalPackage.price,
+                        rentalPackage.includedKm
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-8 flex w-full items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-[12px] font-bold uppercase tracking-[1px] text-white transition-colors hover:bg-white hover:text-black"
+                    >
+                      <FaWhatsapp size={18} />
+                      Book This Package
+                    </a>
+                  </div>
+                </motion.article>
+              )
+            )}
+          </div>
+
+          <p className="mt-8 text-center text-[11px] leading-6 text-white/40">
+            Package prices, kilometre limits and charges may
+            change during weekends, holidays and peak seasons.
+          </p>
+        </div>
+      </section>
+
+      {/* Features and trip information */}
       <section className="bg-[#fafafa] py-16 sm:py-20">
         <div className="container-custom">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[58%_42%] lg:gap-16">
+            {/* Features */}
             <div>
               <h2 className="text-[34px] font-extrabold uppercase text-black sm:text-[42px]">
                 Premium Features
@@ -183,7 +455,7 @@ const CarDetailsPage = () => {
                 {car.features.map((feature) => (
                   <div
                     key={feature}
-                    className="flex items-center gap-4 rounded-[18px] border border-gray-200 bg-white px-6 py-5 shadow-sm"
+                    className="flex items-center gap-4 rounded-[18px] border border-gray-200 bg-white px-6 py-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg"
                   >
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-600">
                       <FaCheck />
@@ -197,6 +469,7 @@ const CarDetailsPage = () => {
               </div>
             </div>
 
+            {/* Trip planning */}
             <div>
               <h2 className="text-[34px] font-extrabold uppercase text-black sm:text-[42px]">
                 Trip Planning
@@ -208,7 +481,7 @@ const CarDetailsPage = () => {
                 {car.tripTypes.map((trip) => (
                   <span
                     key={trip}
-                    className="rounded-full bg-red-600 px-6 py-3 text-[11px] font-bold uppercase tracking-[1px] text-white"
+                    className="rounded-full bg-red-600 px-6 py-3 text-[11px] font-bold uppercase tracking-[1px] text-white shadow-lg shadow-red-600/15"
                   >
                     {trip}
                   </span>
@@ -248,6 +521,8 @@ const CarDetailsPage = () => {
                     "Pickup and drop available across Tirupati",
                     "Fuel policy: same-to-same",
                     "Valid driving licence and Aadhaar required",
+                    "Traffic fines are payable by the customer",
+                    "Vehicle must be returned on time",
                   ].map((information) => (
                     <div
                       key={information}
@@ -276,7 +551,10 @@ const CarDetailsPage = () => {
 
               <h2 className="mt-5 text-[38px] font-extrabold uppercase leading-[1] text-black sm:text-[52px]">
                 Explore Other
-                <span className="block text-red-600">Premium Cars</span>
+
+                <span className="block text-red-600">
+                  Premium Cars
+                </span>
               </h2>
             </div>
 
@@ -291,35 +569,67 @@ const CarDetailsPage = () => {
           </div>
 
           <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {recommendedCars.map((recommendedCar) => (
-              <Link
-                key={recommendedCar.id}
-                to={`/car/${recommendedCar.slug}`}
-                className="group overflow-hidden rounded-[24px] border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-              >
-                <div className="relative h-[280px] overflow-hidden bg-[#f8f8f8]">
-                  <img
-                    src={recommendedCar.image}
-                    alt={recommendedCar.name}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+            {recommendedCars.map((recommendedCar) => {
+              const startingPrice = Math.min(
+                ...recommendedCar.rentalPackages.map(
+                  (rentalPackage) =>
+                    rentalPackage.price
+                )
+              );
 
-                  <span className="absolute left-5 top-5 rounded-lg bg-red-600 px-4 py-2 text-[9px] font-bold uppercase tracking-[1px] text-white">
-                    {recommendedCar.category}
-                  </span>
-                </div>
+              return (
+                <Link
+                  key={recommendedCar.id}
+                  to={`/car/${recommendedCar.slug}`}
+                  className="group overflow-hidden rounded-[24px] border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+                >
+                  <div className="relative h-[280px] overflow-hidden bg-[#f8f8f8]">
+                    <img
+                      src={recommendedCar.image}
+                      alt={recommendedCar.name}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
 
-                <div className="p-7">
-                  <p className="text-[9px] font-bold uppercase tracking-[1.5px] text-red-600">
-                    {recommendedCar.brand}
-                  </p>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
-                  <h3 className="mt-3 text-[25px] font-extrabold uppercase text-black">
-                    {recommendedCar.name}
-                  </h3>
-                </div>
-              </Link>
-            ))}
+                    <span className="absolute left-5 top-5 rounded-lg bg-red-600 px-4 py-2 text-[9px] font-bold uppercase tracking-[1px] text-white">
+                      {recommendedCar.category}
+                    </span>
+
+                    <div className="absolute bottom-5 left-5 text-white">
+                      <p className="text-[9px] font-semibold uppercase tracking-[1.5px] text-white/65">
+                        Starting From
+                      </p>
+
+                      <p className="mt-1 text-[24px] font-extrabold">
+                        ₹
+                        {startingPrice.toLocaleString(
+                          "en-IN"
+                        )}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-7">
+                    <p className="text-[9px] font-bold uppercase tracking-[1.5px] text-red-600">
+                      {recommendedCar.brand}
+                    </p>
+
+                    <h3 className="mt-3 text-[25px] font-extrabold uppercase text-black transition-colors group-hover:text-red-600">
+                      {recommendedCar.name}
+                    </h3>
+
+                    <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-5">
+                      <span className="text-[11px] font-semibold text-gray-500">
+                        View rental plans
+                      </span>
+
+                      <FaArrowLeft className="rotate-180 text-red-600 transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

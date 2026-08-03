@@ -60,12 +60,14 @@ const Contact = () => {
     useState<FormData>(initialFormData);
 
   const [errors, setErrors] = useState<FormErrors>({});
-
   const [successMessage, setSuccessMessage] = useState("");
   const [submitError, setSubmitError] = useState("");
 
-  const [whatsappLoading, setWhatsappLoading] = useState(false);
-  const [databaseLoading, setDatabaseLoading] = useState(false);
+  const [whatsappLoading, setWhatsappLoading] =
+    useState(false);
+
+  const [databaseLoading, setDatabaseLoading] =
+    useState(false);
 
   const minimumPickupDate = useMemo(() => {
     const today = new Date();
@@ -113,20 +115,23 @@ const Contact = () => {
     const name = formData.name.trim();
     const phone = formData.phone.trim();
     const email = formData.email.trim();
-    const pickupLocation = formData.pickupLocation.trim();
+    const pickupLocation =
+      formData.pickupLocation.trim();
     const message = formData.message.trim();
 
     if (!name) {
       newErrors.name = "Please enter your full name";
     } else if (name.length < 3) {
-      newErrors.name = "Name must contain at least 3 characters";
+      newErrors.name =
+        "Name must contain at least 3 characters";
     } else if (!/^[a-zA-Z\s.'-]+$/.test(name)) {
       newErrors.name =
         "Name can contain only letters and spaces";
     }
 
     if (!phone) {
-      newErrors.phone = "Please enter your mobile number";
+      newErrors.phone =
+        "Please enter your mobile number";
     } else if (!/^[6-9]\d{9}$/.test(phone)) {
       newErrors.phone =
         "Enter a valid 10-digit Indian mobile number";
@@ -136,7 +141,8 @@ const Contact = () => {
       email &&
       !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)
     ) {
-      newErrors.email = "Enter a valid email address";
+      newErrors.email =
+        "Enter a valid email address";
     }
 
     if (!formData.car) {
@@ -144,7 +150,8 @@ const Contact = () => {
     }
 
     if (!formData.pickupDate) {
-      newErrors.pickupDate = "Please select a pickup date";
+      newErrors.pickupDate =
+        "Please select a pickup date";
     } else {
       const selectedDate = new Date(
         `${formData.pickupDate}T00:00:00`
@@ -169,7 +176,8 @@ const Contact = () => {
     }
 
     if (!message) {
-      newErrors.message = "Please enter your trip details";
+      newErrors.message =
+        "Please enter your trip details";
     } else if (message.length < 10) {
       newErrors.message =
         "Trip details must contain at least 10 characters";
@@ -193,8 +201,12 @@ const Contact = () => {
     }, 0);
   };
 
-  const formatPickupDate = (dateValue: string): string => {
-    const date = new Date(`${dateValue}T00:00:00`);
+  const formatPickupDate = (
+    dateValue: string
+  ): string => {
+    const date = new Date(
+      `${dateValue}T00:00:00`
+    );
 
     return date.toLocaleDateString("en-IN", {
       day: "2-digit",
@@ -203,10 +215,6 @@ const Contact = () => {
     });
   };
 
-  /*
-   * BUTTON 1:
-   * Open WhatsApp with all booking details.
-   */
   const handleWhatsAppSubmit = () => {
     setSuccessMessage("");
     setSubmitError("");
@@ -225,7 +233,9 @@ const Contact = () => {
 📞 *Mobile Number:* ${formData.phone.trim()}
 📧 *Email:* ${formData.email.trim() || "Not provided"}
 🚘 *Selected Car:* ${formData.car}
-📅 *Pickup Date:* ${formatPickupDate(formData.pickupDate)}
+📅 *Pickup Date:* ${formatPickupDate(
+      formData.pickupDate
+    )}
 📍 *Pickup Location:* ${formData.pickupLocation.trim()}
 
 📝 *Trip Details:*
@@ -255,10 +265,6 @@ Please confirm vehicle availability, rental price and booking terms.
     setWhatsappLoading(false);
   };
 
-  /*
-   * BUTTON 2:
-   * Save booking directly to the Supabase database.
-   */
   const handleDatabaseSubmit = async (
     event: FormEvent<HTMLFormElement>
   ) => {
@@ -281,17 +287,18 @@ Please confirm vehicle availability, rental price and booking terms.
         email: formData.email.trim() || null,
         selected_car: formData.car,
         pickup_date: formData.pickupDate,
-        pickup_location: formData.pickupLocation.trim(),
+        pickup_location:
+          formData.pickupLocation.trim(),
         trip_details: formData.message.trim(),
         status: "pending",
       };
 
-      const { error } = await supabase
+      const { error: insertError } = await supabase
         .from("bookings")
-        .insert(bookingData);
+        .insert([bookingData]);
 
-      if (error) {
-        throw error;
+      if (insertError) {
+        throw insertError;
       }
 
       setSuccessMessage(
@@ -300,12 +307,15 @@ Please confirm vehicle availability, rental price and booking terms.
 
       setFormData(initialFormData);
       setErrors({});
-    } catch (error) {
-      console.error("Unable to save booking:", error);
+    } catch (caughtError) {
+      console.error(
+        "Unable to save booking:",
+        caughtError
+      );
 
       setSubmitError(
-        error instanceof Error
-          ? error.message
+        caughtError instanceof Error
+          ? caughtError.message
           : "Unable to save your booking. Please try again."
       );
     } finally {
@@ -328,7 +338,6 @@ Please confirm vehicle availability, rental price and booking terms.
       id="contact"
       className="relative overflow-hidden bg-gradient-to-b from-white via-[#fffafa] to-white py-16 sm:py-20 lg:py-24"
     >
-      {/* Background decoration */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-32 top-16 h-[360px] w-[360px] rounded-full bg-red-100/60 blur-3xl" />
 
@@ -336,7 +345,6 @@ Please confirm vehicle availability, rental price and booking terms.
       </div>
 
       <div className="container-custom relative z-10">
-        {/* Heading */}
         <div className="mx-auto max-w-[850px] text-center">
           <motion.p
             initial={{ opacity: 0, y: 18 }}
@@ -375,14 +383,12 @@ Please confirm vehicle availability, rental price and booking terms.
             }}
             className="mx-auto mt-5 max-w-[720px] text-[13px] leading-7 text-gray-500 sm:text-[15px]"
           >
-            Send your enquiry through WhatsApp or save your
-            booking directly to our database.
+            Send your enquiry through WhatsApp or save
+            your booking directly to our database.
           </motion.p>
         </div>
 
-        {/* Layout */}
         <div className="mt-12 grid grid-cols-1 gap-7 lg:mt-14 lg:grid-cols-[38%_62%] lg:gap-8 xl:gap-10">
-          {/* Left details */}
           <motion.aside
             initial={{ opacity: 0, x: -35 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -498,7 +504,6 @@ Please confirm vehicle availability, rental price and booking terms.
             </div>
           </motion.aside>
 
-          {/* Form */}
           <motion.div
             initial={{ opacity: 0, x: 35 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -524,7 +529,6 @@ Please confirm vehicle availability, rental price and booking terms.
               noValidate
             >
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                {/* Name */}
                 <div>
                   <label
                     htmlFor="name"
@@ -562,7 +566,6 @@ Please confirm vehicle availability, rental price and booking terms.
                   )}
                 </div>
 
-                {/* Phone */}
                 <div>
                   <label
                     htmlFor="phone"
@@ -601,13 +604,13 @@ Please confirm vehicle availability, rental price and booking terms.
                   )}
                 </div>
 
-                {/* Email */}
                 <div>
                   <label
                     htmlFor="email"
                     className="mb-2 block text-[11px] font-semibold text-gray-700"
                   >
                     Email Address
+
                     <span className="ml-1 font-normal text-gray-400">
                       Optional
                     </span>
@@ -626,6 +629,7 @@ Please confirm vehicle availability, rental price and booking terms.
                       id="email"
                       name="email"
                       type="email"
+                      autoComplete="email"
                       value={formData.email}
                       onChange={handleChange}
                       aria-invalid={Boolean(errors.email)}
@@ -641,7 +645,6 @@ Please confirm vehicle availability, rental price and booking terms.
                   )}
                 </div>
 
-                {/* Car */}
                 <div>
                   <label
                     htmlFor="car"
@@ -665,16 +668,39 @@ Please confirm vehicle availability, rental price and booking terms.
                       value={formData.car}
                       onChange={handleChange}
                       aria-invalid={Boolean(errors.car)}
-                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
+                      className="h-[52px] w-full cursor-pointer bg-transparent text-[12px] outline-none"
                     >
-                      <option value="">Choose a car</option>
-                      <option value="Maruti Swift">Maruti Swift</option>
-                      <option value="Maruti Baleno">Maruti Baleno</option>
-                      <option value="Maruti Dzire">Maruti Dzire</option>
-                      <option value="Maruti Ertiga">Maruti Ertiga</option>
-                      <option value="Toyota Innova">Toyota Innova</option>
-                      <option value="Kia Carens">Kia Carens</option>
-                      <option value="Toyota Fortuner">Toyota Fortuner</option>
+                      <option value="">
+                        Choose a car
+                      </option>
+
+                      <option value="Maruti Swift">
+                        Maruti Swift
+                      </option>
+
+                      <option value="Maruti Baleno">
+                        Maruti Baleno
+                      </option>
+
+                      <option value="Maruti Dzire">
+                        Maruti Dzire
+                      </option>
+
+                      <option value="Maruti Ertiga">
+                        Maruti Ertiga
+                      </option>
+
+                      <option value="Toyota Innova">
+                        Toyota Innova
+                      </option>
+
+                      <option value="Kia Carens">
+                        Kia Carens
+                      </option>
+
+                      <option value="Toyota Fortuner">
+                        Toyota Fortuner
+                      </option>
                     </select>
                   </div>
 
@@ -685,7 +711,6 @@ Please confirm vehicle availability, rental price and booking terms.
                   )}
                 </div>
 
-                {/* Date */}
                 <div>
                   <label
                     htmlFor="pickupDate"
@@ -710,7 +735,9 @@ Please confirm vehicle availability, rental price and booking terms.
                       min={minimumPickupDate}
                       value={formData.pickupDate}
                       onChange={handleChange}
-                      aria-invalid={Boolean(errors.pickupDate)}
+                      aria-invalid={Boolean(
+                        errors.pickupDate
+                      )}
                       className="h-[52px] w-full bg-transparent text-[12px] outline-none"
                     />
                   </div>
@@ -722,7 +749,6 @@ Please confirm vehicle availability, rental price and booking terms.
                   )}
                 </div>
 
-                {/* Location */}
                 <div>
                   <label
                     htmlFor="pickupLocation"
@@ -746,7 +772,9 @@ Please confirm vehicle availability, rental price and booking terms.
                       type="text"
                       value={formData.pickupLocation}
                       onChange={handleChange}
-                      aria-invalid={Boolean(errors.pickupLocation)}
+                      aria-invalid={Boolean(
+                        errors.pickupLocation
+                      )}
                       placeholder="Enter pickup location"
                       className="h-[52px] w-full bg-transparent text-[12px] outline-none"
                     />
@@ -760,7 +788,6 @@ Please confirm vehicle availability, rental price and booking terms.
                 </div>
               </div>
 
-              {/* Message */}
               <div className="mt-5">
                 <div className="mb-2 flex items-center justify-between">
                   <label
@@ -770,7 +797,13 @@ Please confirm vehicle availability, rental price and booking terms.
                     Trip Details
                   </label>
 
-                  <span className="text-[10px] text-gray-400">
+                  <span
+                    className={`text-[10px] ${
+                      formData.message.length > 450
+                        ? "text-red-500"
+                        : "text-gray-400"
+                    }`}
+                  >
                     {formData.message.length}/500
                   </span>
                 </div>
@@ -804,60 +837,67 @@ Please confirm vehicle availability, rental price and booking terms.
                 )}
               </div>
 
-              {/* Success */}
               {successMessage && (
-                <div className="mt-5 flex gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-[11px] text-green-700">
+                <div
+                  role="status"
+                  className="mt-5 flex gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-[11px] text-green-700"
+                >
                   <FaCheckCircle className="mt-0.5 shrink-0" />
-                  {successMessage}
+
+                  <span>{successMessage}</span>
                 </div>
               )}
 
-              {/* Error */}
               {submitError && (
-                <div className="mt-5 flex gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[11px] text-red-700">
+                <div
+                  role="alert"
+                  className="mt-5 flex gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[11px] text-red-700"
+                >
                   <FaExclamationCircle className="mt-0.5 shrink-0" />
-                  {submitError}
+
+                  <span>{submitError}</span>
                 </div>
               )}
 
-              {/* Buttons */}
               <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {/* Existing WhatsApp button */}
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   type="button"
                   onClick={handleWhatsAppSubmit}
                   disabled={isSubmitting}
-                  className="flex items-center justify-center gap-3 rounded-xl bg-green-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-green-600/20 transition hover:bg-green-700 disabled:opacity-60"
+                  className="flex items-center justify-center gap-3 rounded-xl bg-green-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-green-600/20 transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {whatsappLoading ? (
                     <>
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+
                       Opening WhatsApp...
                     </>
                   ) : (
                     <>
                       Send on WhatsApp
+
                       <FaWhatsapp size={18} />
                     </>
                   )}
                 </motion.button>
 
-                {/* New database button */}
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-red-600/20 transition hover:bg-black disabled:opacity-60"
+                  className="flex items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-red-600/20 transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {databaseLoading ? (
                     <>
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+
                       Saving Booking...
                     </>
                   ) : (
                     <>
                       Save Booking
+
                       <FaDatabase size={15} />
                     </>
                   )}
@@ -868,14 +908,15 @@ Please confirm vehicle availability, rental price and booking terms.
                 type="button"
                 onClick={resetForm}
                 disabled={isSubmitting}
-                className="mt-3 w-full rounded-xl border border-gray-200 bg-white px-6 py-3.5 text-[12px] font-semibold text-gray-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:opacity-60"
+                className="mt-3 w-full rounded-xl border border-gray-200 bg-white px-6 py-3.5 text-[12px] font-semibold text-gray-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Clear Form
               </button>
 
               <p className="mt-4 text-center text-[10px] leading-5 text-gray-400">
-                Use WhatsApp for instant contact or Save Booking
-                to submit your enquiry directly to our database.
+                Use WhatsApp for instant contact or Save
+                Booking to submit your enquiry directly to
+                our database.
               </p>
             </form>
           </motion.div>

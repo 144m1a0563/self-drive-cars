@@ -1,24 +1,21 @@
 import { useState } from "react";
 import {
-  FaBars,
-  FaTimes,
-  FaPhoneAlt,
-  FaChevronDown,
   FaArrowRight,
+  FaBars,
+  FaChevronDown,
+  FaPhoneAlt,
+  FaTimes,
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link, NavLink } from "react-router-dom";
+
+import { cars } from "../../data/cars";
 
 interface MenuItem {
   label: string;
   to: string;
   dropdown?: boolean;
   external?: boolean;
-}
-
-interface CarMenuItem {
-  name: string;
-  slug: string;
 }
 
 const menuItems: MenuItem[] = [
@@ -43,37 +40,6 @@ const menuItems: MenuItem[] = [
   {
     label: "CONTACT US",
     to: "/contact",
-  },
-];
-
-const carItems: CarMenuItem[] = [
-  {
-    name: "Maruti Swift",
-    slug: "maruti-swift",
-  },
-  {
-    name: "Maruti Baleno",
-    slug: "maruti-baleno",
-  },
-  {
-    name: "Maruti Dzire",
-    slug: "maruti-dzire",
-  },
-  {
-    name: "Maruti Ertiga",
-    slug: "maruti-ertiga",
-  },
-  {
-    name: "Toyota Innova",
-    slug: "toyota-innova",
-  },
-  {
-    name: "Kia Carens",
-    slug: "kia-carens",
-  },
-  {
-    name: "Toyota Fortuner",
-    slug: "toyota-fortuner",
   },
 ];
 
@@ -106,7 +72,11 @@ const Navbar = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <Link to="/" onClick={closeAllMenus} className="block">
+            <Link
+              to="/"
+              onClick={closeAllMenus}
+              className="block"
+            >
               <motion.div whileHover={{ scale: 1.05 }}>
                 <h1 className="text-[30px] font-extrabold leading-none tracking-tight text-black lg:text-[36px]">
                   VAMSI
@@ -119,7 +89,7 @@ const Navbar = () => {
             </Link>
           </motion.div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop navigation */}
           <nav className="hidden flex-1 justify-center lg:flex">
             <ul className="flex items-center gap-8 xl:gap-10">
               {menuItems.map((item, index) => (
@@ -131,7 +101,7 @@ const Navbar = () => {
                     delay: index * 0.1,
                     duration: 0.4,
                   }}
-                  className="relative"
+                  className="group relative"
                   onMouseEnter={() => {
                     if (item.dropdown) {
                       setCarsDropdownOpen(true);
@@ -162,7 +132,9 @@ const Navbar = () => {
 
                       <span
                         className={`absolute bottom-1 left-0 h-[2px] bg-red-600 transition-all duration-300 ${
-                          carsDropdownOpen ? "w-full" : "w-0"
+                          carsDropdownOpen
+                            ? "w-full"
+                            : "w-0"
                         }`}
                       />
 
@@ -188,17 +160,30 @@ const Navbar = () => {
                               duration: 0.2,
                               ease: "easeOut",
                             }}
-                            className="absolute left-1/2 top-full z-50 w-[310px] -translate-x-1/2 overflow-hidden rounded-[24px] border border-gray-100 bg-white shadow-[0_25px_70px_rgba(0,0,0,0.16)]"
+                            className="absolute left-1/2 top-full z-50 w-[330px] -translate-x-1/2 overflow-hidden rounded-[24px] border border-gray-100 bg-white shadow-[0_25px_70px_rgba(0,0,0,0.16)]"
                           >
-                            <div className="py-4">
-                              {carItems.map((car) => (
+                            <div className="max-h-[430px] overflow-y-auto py-4">
+                              {cars.slice(0, 3).map((car) => (
                                 <Link
-                                  key={car.slug}
+                                  key={car.id}
                                   to={`/car/${car.slug}`}
                                   onClick={closeCarsDropdown}
-                                  className="block px-6 py-3.5 text-[15px] font-medium text-gray-800 transition-colors hover:bg-red-50 hover:text-red-600"
+                                  className="group/car flex items-center justify-between gap-4 px-6 py-3.5 transition-colors hover:bg-red-50"
                                 >
-                                  {car.name}
+                                  <div className="min-w-0">
+                                    <p className="truncate text-[14px] font-semibold text-gray-800 transition-colors group-hover/car:text-red-600">
+                                      {car.name}
+                                    </p>
+
+                                    <p className="mt-1 text-[9px] font-semibold uppercase tracking-[1.5px] text-gray-400">
+                                      {car.category} · {car.seats} Seats
+                                    </p>
+                                  </div>
+
+                                  <FaArrowRight
+                                    size={12}
+                                    className="shrink-0 text-red-500 opacity-0 transition-all group-hover/car:translate-x-1 group-hover/car:opacity-100"
+                                  />
                                 </Link>
                               ))}
                             </div>
@@ -215,34 +200,36 @@ const Navbar = () => {
                         )}
                       </AnimatePresence>
                     </>
+                  ) : item.external ? (
+                    <>
+                      <a
+                        href={item.to}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 py-4 text-[15px] font-semibold text-gray-800 transition-colors duration-300 hover:text-red-600"
+                      >
+                        {item.label}
+                      </a>
+
+                      <span className="absolute bottom-1 left-0 h-[2px] w-0 bg-red-600 transition-all duration-300 group-hover:w-full" />
+                    </>
                   ) : (
                     <>
-                      {item.external ? (
-  <a
-    href={item.to}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="flex items-center gap-2 py-4 text-[15px] font-semibold text-gray-800 transition-colors duration-300 hover:text-red-600"
-  >
-    {item.label}
-  </a>
-) : (
-  <NavLink
-    to={item.to}
-    onClick={closeCarsDropdown}
-    className={({ isActive }) =>
-      `flex items-center gap-2 py-4 text-[15px] font-semibold transition-colors duration-300 ${
-        isActive && item.to === "/"
-          ? "text-red-600"
-          : "text-gray-800 hover:text-red-600"
-      }`
-    }
-  >
-    {item.label}
-  </NavLink>
-)}
+                      <NavLink
+                        to={item.to}
+                        onClick={closeCarsDropdown}
+                        className={({ isActive }) =>
+                          `flex items-center gap-2 py-4 text-[15px] font-semibold transition-colors duration-300 ${
+                            isActive
+                              ? "text-red-600"
+                              : "text-gray-800 hover:text-red-600"
+                          }`
+                        }
+                      >
+                        {item.label}
+                      </NavLink>
 
-                      <span className="absolute bottom-1 left-0 h-[2px] w-0 bg-red-600 transition-all duration-300 hover:w-full" />
+                      <span className="absolute bottom-1 left-0 h-[2px] w-0 bg-red-600 transition-all duration-300 group-hover:w-full" />
                     </>
                   )}
                 </motion.li>
@@ -250,7 +237,7 @@ const Navbar = () => {
             </ul>
           </nav>
 
-          {/* Desktop Phone */}
+          {/* Desktop phone */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -281,15 +268,17 @@ const Navbar = () => {
                 href="tel:+919704143260"
                 className="text-[17px] font-bold text-black transition-colors hover:text-red-600"
               >
-                +91 9704143260
+                +91 97041 43260
               </a>
             </div>
           </motion.div>
 
-          {/* Mobile Button */}
+          {/* Mobile menu button */}
           <button
             type="button"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-label={
+              menuOpen ? "Close menu" : "Open menu"
+            }
             aria-expanded={menuOpen}
             onClick={() => {
               setMenuOpen((previous) => !previous);
@@ -302,7 +291,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile navigation */}
       <AnimatePresence initial={false}>
         {menuOpen && (
           <motion.div
@@ -329,8 +318,14 @@ const Navbar = () => {
               {menuItems.map((item, index) => (
                 <motion.li
                   key={item.label}
-                  initial={{ x: -25, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
+                  initial={{
+                    x: -25,
+                    opacity: 0,
+                  }}
+                  animate={{
+                    x: 0,
+                    opacity: 1,
+                  }}
                   transition={{
                     delay: index * 0.05,
                   }}
@@ -342,7 +337,9 @@ const Navbar = () => {
                         type="button"
                         aria-expanded={mobileCarsOpen}
                         onClick={() =>
-                          setMobileCarsOpen((previous) => !previous)
+                          setMobileCarsOpen(
+                            (previous) => !previous
+                          )
                         }
                         className="flex w-full items-center justify-between py-4 text-left text-sm font-semibold text-gray-800"
                       >
@@ -351,7 +348,9 @@ const Navbar = () => {
                         <FaChevronDown
                           size={11}
                           className={`text-red-600 transition-transform duration-300 ${
-                            mobileCarsOpen ? "rotate-180" : ""
+                            mobileCarsOpen
+                              ? "rotate-180"
+                              : ""
                           }`}
                         />
                       </button>
@@ -377,21 +376,35 @@ const Navbar = () => {
                             className="overflow-hidden"
                           >
                             <div className="mb-3 border-l-2 border-red-100 pl-4">
-                              {carItems.map((car) => (
+                              {cars.slice(0, 3).map((car) => (
                                 <Link
-                                  key={car.slug}
+                                  key={car.id}
                                   to={`/car/${car.slug}`}
                                   onClick={closeMobileMenu}
-                                  className="block py-2.5 text-[13px] font-medium text-gray-500 transition-colors hover:text-red-600"
+                                  className="group/mobile flex items-center justify-between gap-3 py-3"
                                 >
-                                  {car.name}
+                                  <div className="min-w-0">
+                                    <p className="truncate text-[13px] font-semibold text-gray-600 transition-colors group-hover/mobile:text-red-600">
+                                      {car.name}
+                                    </p>
+
+                                    <p className="mt-0.5 text-[9px] uppercase tracking-[1px] text-gray-400">
+                                      {car.category} ·{" "}
+                                      {car.seats} Seats
+                                    </p>
+                                  </div>
+
+                                  <FaArrowRight
+                                    size={10}
+                                    className="shrink-0 text-red-500"
+                                  />
                                 </Link>
                               ))}
 
                               <Link
                                 to="/cars"
                                 onClick={closeMobileMenu}
-                                className="mt-2 flex items-center justify-between py-3 text-[13px] font-semibold text-red-600"
+                                className="mt-2 flex items-center justify-between border-t border-gray-100 py-4 text-[13px] font-semibold text-red-600"
                               >
                                 View All Cars
                                 <FaArrowRight size={12} />
@@ -401,6 +414,16 @@ const Navbar = () => {
                         )}
                       </AnimatePresence>
                     </>
+                  ) : item.external ? (
+                    <a
+                      href={item.to}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={closeMobileMenu}
+                      className="block py-4 text-sm font-semibold text-gray-800 transition-colors hover:text-red-600"
+                    >
+                      {item.label}
+                    </a>
                   ) : (
                     <Link
                       to={item.to}
