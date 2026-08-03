@@ -130,7 +130,7 @@ const Footer = () => {
 
             <div className="relative z-10 mt-7 flex flex-col gap-3 sm:flex-row lg:mt-0">
               <motion.a
-                href="tel:+919603785823"
+                href="tel:+919704143260"
                 whileHover={{ y: -3 }}
                 whileTap={{ scale: 0.97 }}
                 className="flex items-center justify-center gap-3 rounded-xl bg-white px-6 py-4 text-[12px] font-semibold text-red-600 shadow-lg transition-colors hover:bg-[#07182f] hover:text-white"
@@ -140,7 +140,7 @@ const Footer = () => {
               </motion.a>
 
               <motion.a
-                href="https://wa.me/919603785823"
+                href="https://wa.me/919704143260"
                 target="_blank"
                 rel="noreferrer"
                 whileHover={{ y: -3 }}
@@ -202,7 +202,7 @@ const Footer = () => {
                 </a>
 
                 <a
-                  href="https://wa.me/919603785823"
+                  href="https://wa.me/919704143260"
                   target="_blank"
                   rel="noreferrer"
                   aria-label="WhatsApp"
@@ -282,7 +282,7 @@ const Footer = () => {
 
               <div className="mt-6 space-y-4">
                 <a
-                  href="tel:+919603785823"
+                  href="tel:+919704143260"
                   className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition-all hover:border-red-500/40 hover:bg-white/[0.07]"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600/15 text-[14px] text-red-400">
@@ -295,13 +295,13 @@ const Footer = () => {
                     </span>
 
                     <span className="mt-1 block text-[13px] font-semibold text-white">
-                      +91 9603785823
+                      +91 9704143260
                     </span>
                   </span>
                 </a>
 
                 <a
-                  href="mailto:bookings@vamsicars.in"
+                  href="mailto:vamsinagineni03@gmail.com"
                   className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition-all hover:border-red-500/40 hover:bg-white/[0.07]"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600/15 text-[14px] text-red-400">
@@ -314,7 +314,7 @@ const Footer = () => {
                     </span>
 
                     <span className="mt-1 block break-all text-[12px] font-semibold text-white">
-                      bookings@vamsicars.in
+                      vamsinagineni03@gmail.com
                     </span>
                   </span>
                 </a>

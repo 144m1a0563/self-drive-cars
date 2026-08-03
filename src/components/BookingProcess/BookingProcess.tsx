@@ -246,7 +246,7 @@ const BookingProcess = () => {
 
           <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
             <motion.a
-              href="tel:+919603785823"
+              href="tel:+919704143260"
               whileHover={{ y: -3 }}
               whileTap={{ scale: 0.97 }}
               className="flex items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-red-600/25 transition-colors hover:bg-white hover:text-black"
@@ -256,7 +256,7 @@ const BookingProcess = () => {
             </motion.a>
 
             <motion.a
-              href="https://wa.me/919603785823"
+              href="https://wa.me/919704143260"
               target="_blank"
               rel="noreferrer"
               whileHover={{ y: -3 }}
@@ -288,9 +288,27 @@ const BookingProcess = () => {
           </div>
 
           <a
-            href="#cars"
-            className="flex shrink-0 items-center justify-center gap-3 rounded-xl bg-[#07182f] px-6 py-4 text-[12px] font-semibold text-white transition-all hover:bg-red-600"
-          >
+  href="/cars"
+  className="
+    flex
+    shrink-0
+    items-center
+    justify-center
+    gap-3
+    rounded-xl
+    bg-[#07182f]
+    px-6
+    py-4
+    text-[12px]
+    font-semibold
+    text-white
+    no-underline
+    transition-all
+    duration-300
+    hover:bg-red-600
+    hover:text-white
+  "
+>
             View Available Cars
             <FaArrowRight size={11} />
           </a>

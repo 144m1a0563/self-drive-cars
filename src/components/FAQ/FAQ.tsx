@@ -127,7 +127,7 @@ const FAQ = () => {
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
                 <a
-                  href="tel:+919603785823"
+                  href="tel:+919704143260"
                   className="flex items-center justify-center gap-3 rounded-xl bg-red-600 px-5 py-3.5 text-[12px] font-semibold text-white transition-colors hover:bg-white hover:text-black"
                 >
                   <FaPhoneAlt size={13} />
@@ -135,7 +135,7 @@ const FAQ = () => {
                 </a>
 
                 <a
-                  href="https://wa.me/919603785823"
+                  href="https://wa.me/919704143260"
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-center gap-3 rounded-xl bg-green-500 px-5 py-3.5 text-[12px] font-semibold text-white transition-colors hover:bg-green-600"

@@ -203,22 +203,70 @@ const Fleet = () => {
         </div>
 
         {/* Category filters */}
-        <div className="mt-9 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              type="button"
-              onClick={() => setActiveFilter(filter)}
-              className={`rounded-full border px-5 py-2.5 text-[11px] font-semibold transition-all duration-300 sm:px-6 sm:text-[12px] ${
-                activeFilter === filter
-                  ? "border-red-600 bg-red-600 text-white shadow-lg shadow-red-600/20"
-                  : "border-gray-200 bg-white text-gray-600 hover:border-red-300 hover:text-red-600"
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
+    <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+  {filters.map((filter) => (
+    <button
+      key={filter}
+      type="button"
+      onClick={() => setActiveFilter(filter)}
+      className={`
+        relative
+        overflow-hidden
+        rounded-full
+        border
+        px-6
+        py-3
+        text-[12px]
+        font-semibold
+        transition-all
+        duration-300
+        ${
+          activeFilter === filter
+            ? `
+              border-red-600
+              bg-gradient-to-r
+              from-red-600
+              to-red-500
+              text-white
+              shadow-[0_10px_30px_rgba(220,38,38,0.35)]
+              scale-105
+            `
+            : `
+              border-gray-200
+              bg-gradient-to-r
+              from-white
+              to-gray-50
+              text-gray-700
+              hover:border-red-500
+              hover:from-red-50
+              hover:to-orange-50
+              hover:text-red-600
+              hover:-translate-y-1
+              hover:shadow-[0_10px_25px_rgba(0,0,0,0.08)]
+            `
+        }
+      `}
+    >
+      <span className="relative z-10">{filter}</span>
+
+      {/* Shine Effect */}
+      <span
+        className="
+          absolute
+          left-[-100%]
+          top-0
+          h-full
+          w-1/2
+          -skew-x-12
+          bg-white/20
+          transition-all
+          duration-700
+          group-hover:left-[120%]
+        "
+      />
+    </button>
+  ))}
+</div>
 
         {/* Fleet cards */}
         <motion.div
@@ -362,7 +410,7 @@ const Fleet = () => {
                   </Link>
 
                   <a
-                    href="tel:+919603785823"
+                    href="tel:+919704143260"
                     aria-label={`Call to book ${car.name}`}
                     className="flex h-[48px] w-[48px] items-center justify-center rounded-xl border border-gray-200 bg-white text-red-600 transition-all hover:border-red-600 hover:bg-red-600 hover:text-white"
                   >
@@ -396,11 +444,11 @@ const Fleet = () => {
           </div>
 
           <a
-            href="tel:+919603785823"
+            href="tel:+919704143260"
             className="mt-6 inline-flex items-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-[12px] font-semibold text-white transition-colors hover:bg-white hover:text-black lg:mt-0"
           >
             <FaPhoneAlt />
-            +91 9603785823
+            +91 9704143260
           </a>
         </motion.div>
       </div>

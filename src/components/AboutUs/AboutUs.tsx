@@ -209,7 +209,7 @@ const AboutUs = () => {
               </Link>
 
               <a
-                href="tel:+919603785823"
+                href="tel:+919704143260"
                 className="flex items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-7 py-4 text-[12px] font-semibold text-gray-900 transition-all hover:border-red-600 hover:text-red-600"
               >
                 <FaPhoneAlt size={13} />

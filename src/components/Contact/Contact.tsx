@@ -1,4 +1,10 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import {
+  useMemo,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
+
 import {
   FaUser,
   FaPhoneAlt,
@@ -9,8 +15,13 @@ import {
   FaCommentDots,
   FaWhatsapp,
   FaClock,
+  FaCheckCircle,
+  FaDatabase,
+  FaExclamationCircle,
 } from "react-icons/fa";
+
 import { motion } from "framer-motion";
+import { supabase } from "../../lib/supabase";
 
 interface FormData {
   name: string;
@@ -32,6 +43,8 @@ interface FormErrors {
   message?: string;
 }
 
+const WHATSAPP_NUMBER = "919704143260";
+
 const initialFormData: FormData = {
   name: "",
   phone: "",
@@ -43,10 +56,25 @@ const initialFormData: FormData = {
 };
 
 const Contact = () => {
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formData, setFormData] =
+    useState<FormData>(initialFormData);
+
   const [errors, setErrors] = useState<FormErrors>({});
+
   const [successMessage, setSuccessMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  const [whatsappLoading, setWhatsappLoading] = useState(false);
+  const [databaseLoading, setDatabaseLoading] = useState(false);
+
+  const minimumPickupDate = useMemo(() => {
+    const today = new Date();
+    const timezoneOffset = today.getTimezoneOffset() * 60_000;
+
+    return new Date(today.getTime() - timezoneOffset)
+      .toISOString()
+      .split("T")[0];
+  }, []);
 
   const handleChange = (
     event: ChangeEvent<
@@ -55,9 +83,19 @@ const Contact = () => {
   ) => {
     const { name, value } = event.target;
 
+    let cleanedValue = value;
+
+    if (name === "phone") {
+      cleanedValue = value.replace(/\D/g, "").slice(0, 10);
+    }
+
+    if (name === "name") {
+      cleanedValue = value.replace(/\s{2,}/g, " ");
+    }
+
     setFormData((previous) => ({
       ...previous,
-      [name]: value,
+      [name]: cleanedValue,
     }));
 
     setErrors((previous) => ({
@@ -66,24 +104,37 @@ const Contact = () => {
     }));
 
     setSuccessMessage("");
+    setSubmitError("");
   };
 
-  const validateForm = () => {
+  const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Please enter your name";
+    const name = formData.name.trim();
+    const phone = formData.phone.trim();
+    const email = formData.email.trim();
+    const pickupLocation = formData.pickupLocation.trim();
+    const message = formData.message.trim();
+
+    if (!name) {
+      newErrors.name = "Please enter your full name";
+    } else if (name.length < 3) {
+      newErrors.name = "Name must contain at least 3 characters";
+    } else if (!/^[a-zA-Z\s.'-]+$/.test(name)) {
+      newErrors.name =
+        "Name can contain only letters and spaces";
     }
 
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Please enter your phone number";
-    } else if (!/^[6-9]\d{9}$/.test(formData.phone.trim())) {
-      newErrors.phone = "Enter a valid 10-digit mobile number";
+    if (!phone) {
+      newErrors.phone = "Please enter your mobile number";
+    } else if (!/^[6-9]\d{9}$/.test(phone)) {
+      newErrors.phone =
+        "Enter a valid 10-digit Indian mobile number";
     }
 
     if (
-      formData.email.trim() &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())
+      email &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)
     ) {
       newErrors.email = "Enter a valid email address";
     }
@@ -94,14 +145,37 @@ const Contact = () => {
 
     if (!formData.pickupDate) {
       newErrors.pickupDate = "Please select a pickup date";
+    } else {
+      const selectedDate = new Date(
+        `${formData.pickupDate}T00:00:00`
+      );
+
+      const today = new Date(
+        `${minimumPickupDate}T00:00:00`
+      );
+
+      if (selectedDate < today) {
+        newErrors.pickupDate =
+          "Pickup date cannot be in the past";
+      }
     }
 
-    if (!formData.pickupLocation.trim()) {
-      newErrors.pickupLocation = "Please enter a pickup location";
+    if (!pickupLocation) {
+      newErrors.pickupLocation =
+        "Please enter your pickup location";
+    } else if (pickupLocation.length < 3) {
+      newErrors.pickupLocation =
+        "Pickup location must contain at least 3 characters";
     }
 
-    if (!formData.message.trim()) {
+    if (!message) {
       newErrors.message = "Please enter your trip details";
+    } else if (message.length < 10) {
+      newErrors.message =
+        "Trip details must contain at least 10 characters";
+    } else if (message.length > 500) {
+      newErrors.message =
+        "Trip details cannot exceed 500 characters";
     }
 
     setErrors(newErrors);
@@ -109,29 +183,145 @@ const Contact = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const focusFirstInvalidField = () => {
+    window.setTimeout(() => {
+      const firstInvalidField = document.querySelector(
+        "[aria-invalid='true']"
+      ) as HTMLElement | null;
+
+      firstInvalidField?.focus();
+    }, 0);
+  };
+
+  const formatPickupDate = (dateValue: string): string => {
+    const date = new Date(`${dateValue}T00:00:00`);
+
+    return date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  /*
+   * BUTTON 1:
+   * Open WhatsApp with all booking details.
+   */
+  const handleWhatsAppSubmit = () => {
+    setSuccessMessage("");
+    setSubmitError("");
+
+    if (!validateForm()) {
+      focusFirstInvalidField();
+      return;
+    }
+
+    setWhatsappLoading(true);
+
+    const whatsappMessage = `
+🚗 *New Self Drive Car Booking Enquiry*
+
+👤 *Customer Name:* ${formData.name.trim()}
+📞 *Mobile Number:* ${formData.phone.trim()}
+📧 *Email:* ${formData.email.trim() || "Not provided"}
+🚘 *Selected Car:* ${formData.car}
+📅 *Pickup Date:* ${formatPickupDate(formData.pickupDate)}
+📍 *Pickup Location:* ${formData.pickupLocation.trim()}
+
+📝 *Trip Details:*
+${formData.message.trim()}
+
+Please confirm vehicle availability, rental price and booking terms.
+    `.trim();
+
+    const whatsappUrl =
+      `https://wa.me/${WHATSAPP_NUMBER}` +
+      `?text=${encodeURIComponent(whatsappMessage)}`;
+
+    const whatsappWindow = window.open(
+      whatsappUrl,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+    if (!whatsappWindow) {
+      window.location.href = whatsappUrl;
+    }
+
+    setSuccessMessage(
+      "WhatsApp has been opened with your booking details. Please press Send to complete the enquiry."
+    );
+
+    setWhatsappLoading(false);
+  };
+
+  /*
+   * BUTTON 2:
+   * Save booking directly to the Supabase database.
+   */
+  const handleDatabaseSubmit = async (
+    event: FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
 
-    if (!validateForm()) return;
-
-    setLoading(true);
     setSuccessMessage("");
+    setSubmitError("");
+
+    if (!validateForm()) {
+      focusFirstInvalidField();
+      return;
+    }
+
+    setDatabaseLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 900));
+      const bookingData = {
+        customer_name: formData.name.trim(),
+        mobile_number: formData.phone.trim(),
+        email: formData.email.trim() || null,
+        selected_car: formData.car,
+        pickup_date: formData.pickupDate,
+        pickup_location: formData.pickupLocation.trim(),
+        trip_details: formData.message.trim(),
+        status: "pending",
+      };
+
+      const { error } = await supabase
+        .from("bookings")
+        .insert(bookingData);
+
+      if (error) {
+        throw error;
+      }
 
       setSuccessMessage(
-        "Your booking enquiry has been submitted successfully. Our team will contact you shortly."
+        "Your booking was saved successfully. Our team will contact you shortly."
       );
 
       setFormData(initialFormData);
       setErrors({});
-    } catch {
-      setSuccessMessage("");
+    } catch (error) {
+      console.error("Unable to save booking:", error);
+
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Unable to save your booking. Please try again."
+      );
     } finally {
-      setLoading(false);
+      setDatabaseLoading(false);
     }
   };
+
+  const resetForm = () => {
+    setFormData(initialFormData);
+    setErrors({});
+    setSuccessMessage("");
+    setSubmitError("");
+  };
+
+  const isSubmitting =
+    whatsappLoading || databaseLoading;
 
   return (
     <section
@@ -162,32 +352,44 @@ const Contact = () => {
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.55, delay: 0.08 }}
+            transition={{
+              duration: 0.55,
+              delay: 0.08,
+            }}
             className="mt-4 text-[34px] font-extrabold leading-[1.12] tracking-[-1.5px] text-gray-950 sm:text-[46px] lg:text-[58px]"
           >
             Book your perfect
-            <span className="block text-red-600">self-drive car today</span>
+
+            <span className="block text-red-600">
+              self-drive car today
+            </span>
           </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.16 }}
+            transition={{
+              duration: 0.5,
+              delay: 0.16,
+            }}
             className="mx-auto mt-5 max-w-[720px] text-[13px] leading-7 text-gray-500 sm:text-[15px]"
           >
-            Share your travel details with us. Our booking team will help you
-            choose the right car and confirm availability.
+            Send your enquiry through WhatsApp or save your
+            booking directly to our database.
           </motion.p>
         </div>
 
-        {/* Contact layout */}
+        {/* Layout */}
         <div className="mt-12 grid grid-cols-1 gap-7 lg:mt-14 lg:grid-cols-[38%_62%] lg:gap-8 xl:gap-10">
-          {/* Left contact panel */}
+          {/* Left details */}
           <motion.aside
             initial={{ opacity: 0, x: -35 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
             transition={{ duration: 0.6 }}
             className="relative overflow-hidden rounded-[28px] bg-[#07182f] p-6 text-white sm:p-8 lg:p-9"
           >
@@ -205,13 +407,13 @@ const Contact = () => {
               </h3>
 
               <p className="mt-4 text-[12px] leading-6 text-white/60 sm:text-[13px]">
-                Contact our team for vehicle availability, pricing, delivery
-                locations and booking assistance.
+                Contact our team for vehicle availability,
+                pricing, pickup and booking assistance.
               </p>
 
               <div className="mt-8 space-y-4">
                 <a
-                  href="tel:+919603785823"
+                  href="tel:+919704143260"
                   className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.06] p-4 transition-all hover:border-red-500/40 hover:bg-white/[0.1]"
                 >
                   <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-600 text-[18px] text-white">
@@ -224,15 +426,15 @@ const Contact = () => {
                     </span>
 
                     <span className="mt-1 block text-[15px] font-bold text-white sm:text-[16px]">
-                      +91 9603785823
+                      +91 97041 43260
                     </span>
                   </span>
                 </a>
 
                 <a
-                  href="https://wa.me/919603785823"
+                  href="https://wa.me/919704143260"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.06] p-4 transition-all hover:border-green-500/40 hover:bg-white/[0.1]"
                 >
                   <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-500 text-[21px] text-white">
@@ -260,8 +462,8 @@ const Contact = () => {
                       Email
                     </span>
 
-                    <span className="mt-1 block truncate text-[13px] font-semibold text-white sm:text-[14px]">
-                      bookings@cherrycars.in
+                    <span className="mt-1 block break-all text-[13px] font-semibold text-white">
+                      vamsinagineni03@gmail.com
                     </span>
                   </span>
                 </div>
@@ -276,7 +478,7 @@ const Contact = () => {
                       Working Hours
                     </span>
 
-                    <span className="mt-1 block text-[13px] font-semibold text-white sm:text-[14px]">
+                    <span className="mt-1 block text-[13px] font-semibold text-white">
                       Available 24 Hours
                     </span>
                   </span>
@@ -289,7 +491,8 @@ const Contact = () => {
                 </p>
 
                 <p className="mt-2 text-[13px] font-semibold leading-6 text-white">
-                  Tirupati, Tirumala, Renigunta Airport and nearby locations
+                  Tirupati, Tirumala, Renigunta Airport and
+                  nearby locations
                 </p>
               </div>
             </div>
@@ -299,7 +502,10 @@ const Contact = () => {
           <motion.div
             initial={{ opacity: 0, x: 35 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
+            viewport={{
+              once: true,
+              amount: 0.15,
+            }}
             transition={{ duration: 0.6 }}
             className="rounded-[28px] border border-gray-100 bg-white p-5 shadow-[0_20px_65px_rgba(0,0,0,0.07)] sm:p-7 lg:p-8 xl:p-10"
           >
@@ -313,7 +519,10 @@ const Contact = () => {
               </h3>
             </div>
 
-            <form onSubmit={handleSubmit} noValidate>
+            <form
+              onSubmit={handleDatabaseSubmit}
+              noValidate
+            >
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 {/* Name */}
                 <div>
@@ -325,27 +534,29 @@ const Contact = () => {
                   </label>
 
                   <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 transition-colors focus-within:bg-white ${
+                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
                       errors.name
                         ? "border-red-400"
                         : "border-gray-200 focus-within:border-red-500"
                     }`}
                   >
-                    <FaUser className="shrink-0 text-[14px] text-red-500" />
+                    <FaUser className="shrink-0 text-red-500" />
 
                     <input
                       id="name"
                       name="name"
                       type="text"
+                      autoComplete="name"
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="Enter your name"
-                      className="h-[52px] w-full bg-transparent text-[12px] text-gray-900 outline-none placeholder:text-gray-400"
+                      aria-invalid={Boolean(errors.name)}
+                      placeholder="Enter your full name"
+                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
                     />
                   </div>
 
                   {errors.name && (
-                    <p className="mt-1.5 text-[10px] font-medium text-red-500">
+                    <p className="mt-1.5 text-[10px] text-red-500">
                       {errors.name}
                     </p>
                   )}
@@ -361,13 +572,13 @@ const Contact = () => {
                   </label>
 
                   <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 transition-colors focus-within:bg-white ${
+                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
                       errors.phone
                         ? "border-red-400"
                         : "border-gray-200 focus-within:border-red-500"
                     }`}
                   >
-                    <FaPhoneAlt className="shrink-0 text-[13px] text-red-500" />
+                    <FaPhoneAlt className="shrink-0 text-red-500" />
 
                     <input
                       id="phone"
@@ -377,13 +588,14 @@ const Contact = () => {
                       maxLength={10}
                       value={formData.phone}
                       onChange={handleChange}
+                      aria-invalid={Boolean(errors.phone)}
                       placeholder="10-digit mobile number"
-                      className="h-[52px] w-full bg-transparent text-[12px] text-gray-900 outline-none placeholder:text-gray-400"
+                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
                     />
                   </div>
 
                   {errors.phone && (
-                    <p className="mt-1.5 text-[10px] font-medium text-red-500">
+                    <p className="mt-1.5 text-[10px] text-red-500">
                       {errors.phone}
                     </p>
                   )}
@@ -402,13 +614,13 @@ const Contact = () => {
                   </label>
 
                   <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 transition-colors focus-within:bg-white ${
+                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
                       errors.email
                         ? "border-red-400"
                         : "border-gray-200 focus-within:border-red-500"
                     }`}
                   >
-                    <FaEnvelope className="shrink-0 text-[14px] text-red-500" />
+                    <FaEnvelope className="shrink-0 text-red-500" />
 
                     <input
                       id="email"
@@ -416,13 +628,14 @@ const Contact = () => {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
+                      aria-invalid={Boolean(errors.email)}
                       placeholder="Enter your email"
-                      className="h-[52px] w-full bg-transparent text-[12px] text-gray-900 outline-none placeholder:text-gray-400"
+                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
                     />
                   </div>
 
                   {errors.email && (
-                    <p className="mt-1.5 text-[10px] font-medium text-red-500">
+                    <p className="mt-1.5 text-[10px] text-red-500">
                       {errors.email}
                     </p>
                   )}
@@ -438,20 +651,21 @@ const Contact = () => {
                   </label>
 
                   <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 transition-colors focus-within:bg-white ${
+                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
                       errors.car
                         ? "border-red-400"
                         : "border-gray-200 focus-within:border-red-500"
                     }`}
                   >
-                    <FaCarSide className="shrink-0 text-[15px] text-red-500" />
+                    <FaCarSide className="shrink-0 text-red-500" />
 
                     <select
                       id="car"
                       name="car"
                       value={formData.car}
                       onChange={handleChange}
-                      className="h-[52px] w-full cursor-pointer bg-transparent text-[12px] text-gray-900 outline-none"
+                      aria-invalid={Boolean(errors.car)}
+                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
                     >
                       <option value="">Choose a car</option>
                       <option value="Maruti Swift">Maruti Swift</option>
@@ -459,18 +673,19 @@ const Contact = () => {
                       <option value="Maruti Dzire">Maruti Dzire</option>
                       <option value="Maruti Ertiga">Maruti Ertiga</option>
                       <option value="Toyota Innova">Toyota Innova</option>
-                      <option value="Mahindra XUV">Mahindra XUV</option>
+                      <option value="Kia Carens">Kia Carens</option>
+                      <option value="Toyota Fortuner">Toyota Fortuner</option>
                     </select>
                   </div>
 
                   {errors.car && (
-                    <p className="mt-1.5 text-[10px] font-medium text-red-500">
+                    <p className="mt-1.5 text-[10px] text-red-500">
                       {errors.car}
                     </p>
                   )}
                 </div>
 
-                {/* Pickup date */}
+                {/* Date */}
                 <div>
                   <label
                     htmlFor="pickupDate"
@@ -480,33 +695,34 @@ const Contact = () => {
                   </label>
 
                   <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 transition-colors focus-within:bg-white ${
+                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
                       errors.pickupDate
                         ? "border-red-400"
                         : "border-gray-200 focus-within:border-red-500"
                     }`}
                   >
-                    <FaCalendarAlt className="shrink-0 text-[14px] text-red-500" />
+                    <FaCalendarAlt className="shrink-0 text-red-500" />
 
                     <input
                       id="pickupDate"
                       name="pickupDate"
                       type="date"
+                      min={minimumPickupDate}
                       value={formData.pickupDate}
                       onChange={handleChange}
-                      min={new Date().toISOString().split("T")[0]}
-                      className="h-[52px] w-full bg-transparent text-[12px] text-gray-900 outline-none"
+                      aria-invalid={Boolean(errors.pickupDate)}
+                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
                     />
                   </div>
 
                   {errors.pickupDate && (
-                    <p className="mt-1.5 text-[10px] font-medium text-red-500">
+                    <p className="mt-1.5 text-[10px] text-red-500">
                       {errors.pickupDate}
                     </p>
                   )}
                 </div>
 
-                {/* Pickup location */}
+                {/* Location */}
                 <div>
                   <label
                     htmlFor="pickupLocation"
@@ -516,13 +732,13 @@ const Contact = () => {
                   </label>
 
                   <div
-                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 transition-colors focus-within:bg-white ${
+                    className={`flex items-center gap-3 rounded-xl border bg-gray-50 px-4 focus-within:bg-white ${
                       errors.pickupLocation
                         ? "border-red-400"
                         : "border-gray-200 focus-within:border-red-500"
                     }`}
                   >
-                    <FaMapMarkerAlt className="shrink-0 text-[14px] text-red-500" />
+                    <FaMapMarkerAlt className="shrink-0 text-red-500" />
 
                     <input
                       id="pickupLocation"
@@ -530,13 +746,14 @@ const Contact = () => {
                       type="text"
                       value={formData.pickupLocation}
                       onChange={handleChange}
+                      aria-invalid={Boolean(errors.pickupLocation)}
                       placeholder="Enter pickup location"
-                      className="h-[52px] w-full bg-transparent text-[12px] text-gray-900 outline-none placeholder:text-gray-400"
+                      className="h-[52px] w-full bg-transparent text-[12px] outline-none"
                     />
                   </div>
 
                   {errors.pickupLocation && (
-                    <p className="mt-1.5 text-[10px] font-medium text-red-500">
+                    <p className="mt-1.5 text-[10px] text-red-500">
                       {errors.pickupLocation}
                     </p>
                   )}
@@ -545,35 +762,43 @@ const Contact = () => {
 
               {/* Message */}
               <div className="mt-5">
-                <label
-                  htmlFor="message"
-                  className="mb-2 block text-[11px] font-semibold text-gray-700"
-                >
-                  Trip Details
-                </label>
+                <div className="mb-2 flex items-center justify-between">
+                  <label
+                    htmlFor="message"
+                    className="text-[11px] font-semibold text-gray-700"
+                  >
+                    Trip Details
+                  </label>
+
+                  <span className="text-[10px] text-gray-400">
+                    {formData.message.length}/500
+                  </span>
+                </div>
 
                 <div
-                  className={`flex items-start gap-3 rounded-xl border bg-gray-50 px-4 py-4 transition-colors focus-within:bg-white ${
+                  className={`flex items-start gap-3 rounded-xl border bg-gray-50 px-4 py-4 focus-within:bg-white ${
                     errors.message
                       ? "border-red-400"
                       : "border-gray-200 focus-within:border-red-500"
                   }`}
                 >
-                  <FaCommentDots className="mt-1 shrink-0 text-[15px] text-red-500" />
+                  <FaCommentDots className="mt-1 shrink-0 text-red-500" />
 
                   <textarea
                     id="message"
                     name="message"
                     rows={5}
+                    maxLength={500}
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="Mention return date, destination, number of passengers and other requirements"
-                    className="w-full resize-none bg-transparent text-[12px] leading-6 text-gray-900 outline-none placeholder:text-gray-400"
+                    aria-invalid={Boolean(errors.message)}
+                    placeholder="Mention destination, return date and requirements"
+                    className="w-full resize-none bg-transparent text-[12px] leading-6 outline-none"
                   />
                 </div>
 
                 {errors.message && (
-                  <p className="mt-1.5 text-[10px] font-medium text-red-500">
+                  <p className="mt-1.5 text-[10px] text-red-500">
                     {errors.message}
                   </p>
                 )}
@@ -581,34 +806,76 @@ const Contact = () => {
 
               {/* Success */}
               {successMessage && (
-                <div className="mt-5 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-[11px] font-medium leading-5 text-green-700">
+                <div className="mt-5 flex gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-[11px] text-green-700">
+                  <FaCheckCircle className="mt-0.5 shrink-0" />
                   {successMessage}
                 </div>
               )}
 
-              {/* Submit */}
-              <motion.button
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={loading}
-                className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-red-600/20 transition-all hover:bg-black disabled:cursor-not-allowed disabled:opacity-65"
+              {/* Error */}
+              {submitError && (
+                <div className="mt-5 flex gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[11px] text-red-700">
+                  <FaExclamationCircle className="mt-0.5 shrink-0" />
+                  {submitError}
+                </div>
+              )}
+
+              {/* Buttons */}
+              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {/* Existing WhatsApp button */}
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={handleWhatsAppSubmit}
+                  disabled={isSubmitting}
+                  className="flex items-center justify-center gap-3 rounded-xl bg-green-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-green-600/20 transition hover:bg-green-700 disabled:opacity-60"
+                >
+                  {whatsappLoading ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                      Opening WhatsApp...
+                    </>
+                  ) : (
+                    <>
+                      Send on WhatsApp
+                      <FaWhatsapp size={18} />
+                    </>
+                  )}
+                </motion.button>
+
+                {/* New database button */}
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-red-600/20 transition hover:bg-black disabled:opacity-60"
+                >
+                  {databaseLoading ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                      Saving Booking...
+                    </>
+                  ) : (
+                    <>
+                      Save Booking
+                      <FaDatabase size={15} />
+                    </>
+                  )}
+                </motion.button>
+              </div>
+
+              <button
+                type="button"
+                onClick={resetForm}
+                disabled={isSubmitting}
+                className="mt-3 w-full rounded-xl border border-gray-200 bg-white px-6 py-3.5 text-[12px] font-semibold text-gray-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:opacity-60"
               >
-                {loading ? (
-                  <>
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                    Sending Enquiry...
-                  </>
-                ) : (
-                  <>
-                    Submit Booking Enquiry
-                    <FaCarSide size={14} />
-                  </>
-                )}
-              </motion.button>
+                Clear Form
+              </button>
 
               <p className="mt-4 text-center text-[10px] leading-5 text-gray-400">
-                By submitting this form, you agree to be contacted regarding
-                your booking enquiry.
+                Use WhatsApp for instant contact or Save Booking
+                to submit your enquiry directly to our database.
               </p>
             </form>
           </motion.div>

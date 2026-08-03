@@ -17,8 +17,10 @@ import Testimonials from "./components/Testimonials/Testimonials";
 import FAQ from "./components/FAQ/FAQ";
 import Contact from "./components/Contact/Contact";
 import Footer from "./components/Footer/Footer";
-
+import BookService from "./pages/BookService";
 import CarDetailsPage from "./pages/CarDetailsPage";
+import TermsConditions from "./pages/TermsConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const ScrollToLocation = () => {
   const location = useLocation();
@@ -136,10 +138,23 @@ function App() {
 
         <Route path="/car" element={<CarsPage />} />
 
+        <Route path="/book-service" element={<BookService />} />
+        <Route path="/contact" element={<Contact />} />
+
         <Route
           path="/car/:slug"
           element={<CarDetailsPage />}
         />
+
+        <Route
+  path="/terms-and-conditions"
+  element={<TermsConditions />}
+/>
+
+<Route
+  path="/privacy-policy"
+  element={<PrivacyPolicy />}
+/>
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

@@ -37,12 +37,12 @@ const menuItems: MenuItem[] = [
   },
   {
     label: "BOOK NOW",
-    to: "https://wa.me/919603785823?text=Hello%20Vamsi%20Self%20Drive%20Cars,%20I%20would%20like%20to%20book%20a%20car.",
+    to: "https://wa.me/919704143260?text=Hello%20Vamsi%20Self%20Drive%20Cars,%20I%20would%20like%20to%20book%20a%20car.",
     external: true,
   },
   {
     label: "CONTACT US",
-    to: "/cars#contact",
+    to: "/contact",
   },
 ];
 
@@ -258,7 +258,7 @@ const Navbar = () => {
             className="hidden items-center gap-4 lg:flex"
           >
             <motion.a
-              href="tel:+919603785823"
+              href="tel:+919704143260"
               aria-label="Call Vamsi Self Drive Cars"
               animate={{
                 scale: [1, 1.08, 1],
@@ -278,10 +278,10 @@ const Navbar = () => {
               </p>
 
               <a
-                href="tel:+919603785823"
+                href="tel:+919704143260"
                 className="text-[17px] font-bold text-black transition-colors hover:text-red-600"
               >
-                +91 9603785823
+                +91 9704143260
               </a>
             </div>
           </motion.div>
@@ -415,7 +415,7 @@ const Navbar = () => {
 
               <li className="py-5">
                 <a
-                  href="tel:+919603785823"
+                  href="tel:+919704143260"
                   className="flex items-center justify-center gap-3 rounded-xl bg-red-600 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-black"
                 >
                   <FaPhoneAlt />

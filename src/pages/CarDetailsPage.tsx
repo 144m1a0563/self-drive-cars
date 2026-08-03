@@ -144,7 +144,7 @@ const CarDetailsPage = () => {
 
               <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <a
-                  href={`https://wa.me/919603785823?text=${encodeURIComponent(
+                  href={`https://wa.me/919704143260?text=${encodeURIComponent(
                     `Hello, I want to book ${car.name}.`
                   )}`}
                   target="_blank"
@@ -156,7 +156,7 @@ const CarDetailsPage = () => {
                 </a>
 
                 <a
-                  href="tel:+919603785823"
+                  href="tel:+919704143260"
                   className="flex items-center justify-center gap-3 rounded-xl border-2 border-black px-6 py-5 text-[12px] font-bold uppercase tracking-[1px] text-black transition-colors hover:bg-black hover:text-white"
                 >
                   <FaPhoneAlt />
