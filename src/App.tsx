@@ -66,6 +66,7 @@ const HomePage = () => {
   return (
     <main>
       <Hero />
+      <Fleet />
       <WhyChooseUs />
       <Services />
       <BookingProcess />
