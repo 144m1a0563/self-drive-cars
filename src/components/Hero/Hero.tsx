@@ -6,6 +6,7 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
+import { cars } from "../../data/cars";
 
 interface CarSlide {
   name: string;
@@ -18,33 +19,10 @@ interface Feature {
   icon: ReactNode;
 }
 
-const carSlides: CarSlide[] = [
-  {
-    name: "MARUTI SWIFT",
-    image:
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1600&q=90",
-  },
-  {
-    name: "HYUNDAI i20",
-    image:
-      "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1600&q=90",
-  },
-  {
-    name: "TOYOTA INNOVA",
-    image:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=90",
-  },
-  {
-    name: "MAHINDRA XUV700",
-    image:
-      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1600&q=90",
-  },
-  {
-    name: "KIA SELTOS",
-    image:
-      "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1600&q=90",
-  },
-];
+const carSlides: CarSlide[] = cars.slice(0, 4).map((car) => ({
+  name: car.name.toUpperCase(),
+  image: car.image,
+}));
 
 const features: Feature[] = [
   {
@@ -441,7 +419,7 @@ const Hero = () => {
       {/* Floating call button */}
       <motion.a
         href="tel:+919704143260"
-        aria-label="Call Vamsi Self Drive Cars"
+        aria-label="Call Tiya Self Drive Cars"
         initial={{
           opacity: 0,
           x: -30,
@@ -491,7 +469,7 @@ const Hero = () => {
 
       {/* Floating WhatsApp button */}
       <motion.a
-        href="https://wa.me/919704143260?text=Hello%20Vamsi%20Self%20Drive%20Cars,%20I%20would%20like%20to%20book%20a%20car."
+        href="https://wa.me/919704143260?text=Hello%20Tiya%20Self%20Drive%20Cars,%20I%20would%20like%20to%20book%20a%20car."
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Book through WhatsApp"

@@ -226,7 +226,7 @@ const WhyChooseUs = () => {
 
           <div className="relative z-10 mt-7 flex flex-col gap-3 sm:flex-row lg:mt-0">
             <motion.a
-              href="#cars"
+              href="/cars"
               whileHover={{ y: -3 }}
               whileTap={{ scale: 0.97 }}
               className="flex items-center justify-center gap-3 rounded-xl bg-red-600 px-6 py-4 text-[12px] font-semibold text-white shadow-lg shadow-red-600/25 transition-colors hover:bg-white hover:text-black"

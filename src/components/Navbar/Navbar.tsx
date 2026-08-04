@@ -34,7 +34,7 @@ const menuItems: MenuItem[] = [
   },
   {
     label: "BOOK NOW",
-    to: "https://wa.me/919704143260?text=Hello%20Vamsi%20Self%20Drive%20Cars,%20I%20would%20like%20to%20book%20a%20car.",
+    to: "https://wa.me/919704143260?text=Hello%20Tiya%20Self%20Drive%20Cars,%20I%20would%20like%20to%20book%20a%20car.",
     external: true,
   },
   {
@@ -79,7 +79,7 @@ const Navbar = () => {
             >
               <motion.div whileHover={{ scale: 1.05 }}>
                 <h1 className="text-[30px] font-extrabold leading-none tracking-tight text-black lg:text-[36px]">
-                  VAMSI
+                  Tiya
                 </h1>
 
                 <p className="mt-1 text-[10px] font-semibold uppercase tracking-[4px] text-gray-700 lg:text-[13px]">
@@ -246,7 +246,7 @@ const Navbar = () => {
           >
             <motion.a
               href="tel:+919704143260"
-              aria-label="Call Vamsi Self Drive Cars"
+              aria-label="Call Tiya Self Drive Cars"
               animate={{
                 scale: [1, 1.08, 1],
               }}

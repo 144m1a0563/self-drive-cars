@@ -78,7 +78,7 @@ const CarDetailsPage = () => {
   ) => {
     const message = duration
       ? `
-Hello Vamsi Self Drive Cars,
+Hello Tiya Self Drive Cars,
 
 I would like to book the following car:
 
@@ -90,7 +90,7 @@ Included Distance: ${includedKm} KM
 Please confirm availability and booking details.
         `.trim()
       : `
-Hello Vamsi Self Drive Cars,
+Hello Tiya Self Drive Cars,
 
 I would like to book ${car.name}.
 

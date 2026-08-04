@@ -95,7 +95,7 @@ const TermsConditions = () => {
 
           <p className="mt-6 max-w-3xl mx-auto text-gray-600 leading-8">
             Please read these Terms & Conditions carefully before booking a
-            self-drive vehicle from Vamsi Self Drive Cars. By booking our
+            self-drive vehicle from Tiya Self Drive Cars. By booking our
             services, you agree to comply with the terms mentioned below.
           </p>
         </motion.div>

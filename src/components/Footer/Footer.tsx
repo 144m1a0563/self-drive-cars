@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { cars } from "../../data/cars";
 
 interface FooterLink {
   label: string;
@@ -56,36 +57,7 @@ const quickLinks: FooterLink[] = [
   },
 ];
 
-const carLinks: FooterLink[] = [
-  {
-    label: "Maruti Swift",
-    to: "/car/maruti-swift",
-  },
-  {
-    label: "Maruti Baleno",
-    to: "/car/maruti-baleno",
-  },
-  {
-    label: "Maruti Dzire",
-    to: "/car/maruti-dzire",
-  },
-  {
-    label: "Maruti Ertiga",
-    to: "/car/maruti-ertiga",
-  },
-  {
-    label: "Toyota Innova",
-    to: "/car/toyota-innova",
-  },
-  {
-    label: "Kia Carens",
-    to: "/car/kia-carens",
-  },
-  {
-    label: "Toyota Fortuner",
-    to: "/car/toyota-fortuner",
-  },
-];
+
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -123,7 +95,7 @@ const Footer = () => {
               </h2>
 
               <p className="mt-3 max-w-[650px] text-[12px] leading-6 text-white/85 sm:text-[13px]">
-                Contact Vamsi Self Drive Cars for clean, reliable and
+                Contact Tiya Self Drive Cars for clean, reliable and
                 affordable self-drive cars in Tirupati.
               </p>
             </div>
@@ -168,7 +140,7 @@ const Footer = () => {
 
                 <span>
                   <span className="block text-[28px] font-extrabold leading-none tracking-[-1px] text-white">
-                    VAMSI
+                    Tiya
                     <span className="text-red-500"> CARS</span>
                   </span>
 
@@ -179,7 +151,7 @@ const Footer = () => {
               </Link>
 
               <p className="mt-6 max-w-[390px] text-[12px] leading-7 text-white/55 sm:text-[13px]">
-                Vamsi Cars provides clean, affordable and reliable self-drive
+                Tiya Cars provides clean, affordable and reliable self-drive
                 vehicles for local travel, airport trips, temple visits and
                 outstation journeys.
               </p>
@@ -245,31 +217,32 @@ const Footer = () => {
               <div className="mt-3 h-[2px] w-12 rounded-full bg-red-600" />
 
               <ul className="mt-6 space-y-3">
-                {carLinks.map((item) => (
-                  <li key={item.label}>
-                    <Link
-                      to={item.to}
-                      className="group flex items-center gap-2 text-[12px] font-medium text-white/55 transition-colors hover:text-white"
-                    >
-                      <FaChevronRight
-                        size={9}
-                        className="text-red-500 transition-transform group-hover:translate-x-1"
-                      />
+  {cars.slice(0, 4).map((car) => (
+    <li key={car.id}>
+      <Link
+        to={`/car/${car.slug}`}
+        className="group flex items-center gap-2 text-[12px] font-medium text-white/55 transition-colors hover:text-white"
+      >
+        <FaChevronRight
+          size={9}
+          className="text-red-500 transition-transform group-hover:translate-x-1"
+        />
 
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+        {car.name}
+      </Link>
+    </li>
+  ))}
+</ul>
 
-              <Link
-                to="/cars"
-                className="mt-6 inline-flex items-center gap-2 text-[12px] font-semibold text-red-400 transition-colors hover:text-white"
-              >
-                View All Cars
+<Link
+  to="/cars"
+  className="mt-6 inline-flex items-center gap-2 text-[12px] font-semibold text-red-400 transition-colors hover:text-white"
+>
+  View All Cars
+  <FaChevronRight size={9} />
+</Link>
 
-                <FaChevronRight size={9} />
-              </Link>
+              
             </div>
 
             {/* Contact */}
@@ -301,7 +274,7 @@ const Footer = () => {
                 </a>
 
                 <a
-                  href="mailto:vamsinagineni03@gmail.com"
+                  href="mailto:Tiyanagineni03@gmail.com"
                   className="group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition-all hover:border-red-500/40 hover:bg-white/[0.07]"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600/15 text-[14px] text-red-400">
@@ -314,7 +287,7 @@ const Footer = () => {
                     </span>
 
                     <span className="mt-1 block break-all text-[12px] font-semibold text-white">
-                      vamsinagineni03@gmail.com
+                      Tiyanagineni03@gmail.com
                     </span>
                   </span>
                 </a>
@@ -360,7 +333,7 @@ const Footer = () => {
       <div className="relative z-10 border-t border-white/10 bg-black/10">
         <div className="container-custom flex flex-col items-center justify-between gap-4 py-5 text-center sm:flex-row sm:text-left">
           <p className="text-[10px] leading-5 text-white/40 sm:text-[11px]">
-            © {currentYear} Vamsi Self Drive Cars. All rights reserved.
+            © {currentYear} Tiya Self Drive Cars. All rights reserved.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">

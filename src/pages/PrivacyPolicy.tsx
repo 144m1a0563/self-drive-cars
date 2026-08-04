@@ -91,7 +91,7 @@ export default function PrivacyPolicy() {
           </h1>
 
           <p className="mt-6 text-gray-600 leading-8">
-            At <strong>Vamsi Self Drive Cars</strong>, we respect your
+            At <strong>Tiya Self Drive Cars</strong>, we respect your
             privacy and are committed to protecting your personal
             information. This Privacy Policy explains how we collect,
             use, store, and safeguard your information when you use
@@ -165,7 +165,7 @@ export default function PrivacyPolicy() {
             </a>
 
             <a
-              href="mailto:info@vamsiselfdrivecars.com"
+              href="mailto:info@Tiyaselfdrivecars.com"
               className="flex items-center justify-center gap-3 rounded-xl bg-white/10 py-4 font-semibold hover:bg-white/20 transition"
             >
               <FaEnvelope />
@@ -185,7 +185,7 @@ export default function PrivacyPolicy() {
           </div>
 
           <p className="mt-10 text-center text-sm text-white/60">
-            © {new Date().getFullYear()} Vamsi Self Drive Cars. All Rights Reserved.
+            © {new Date().getFullYear()} Tiya Self Drive Cars. All Rights Reserved.
           </p>
         </motion.div>
 

@@ -110,7 +110,7 @@ const AboutUs = () => {
             <div className="relative overflow-hidden rounded-[30px] bg-gray-100 shadow-[0_25px_70px_rgba(0,0,0,0.12)]">
               <img
                 src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=90"
-                alt="Vamsi self drive cars"
+                alt="Tiya self drive cars"
                 className="h-[360px] w-full object-cover sm:h-[460px] lg:h-[560px]"
               />
 
@@ -166,7 +166,7 @@ const AboutUs = () => {
             </h2>
 
             <p className="mt-6 text-[13px] leading-7 text-gray-600 sm:text-[15px]">
-              Vamsi Self Drive Cars provides clean, affordable and dependable
+              Tiya Self Drive Cars provides clean, affordable and dependable
               rental vehicles in Tirupati. We make it easy for travellers,
               families and professionals to book the right car without driver
               restrictions.

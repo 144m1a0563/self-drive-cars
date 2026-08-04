@@ -481,7 +481,7 @@ Please confirm vehicle availability, rental price and booking terms.
                     </span>
 
                     <span className="mt-1 block break-all text-[13px] font-semibold text-white">
-                      vamsinagineni03@gmail.com
+                      Tiyanagineni03@gmail.com
                     </span>
                   </span>
                 </div>
