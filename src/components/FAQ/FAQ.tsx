@@ -134,7 +134,7 @@ const FAQ = () => {
                   Call Now
                 </a>
 
-           <a
+   <a
   href="https://wa.me/919704143260"
   target="_blank"
   rel="noreferrer"
