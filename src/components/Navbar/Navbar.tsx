@@ -8,7 +8,6 @@ import {
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link, NavLink } from "react-router-dom";
-import { trackEvent } from "../../utils/analytics";
 import { cars } from "../../data/cars";
 
 interface MenuItem {
