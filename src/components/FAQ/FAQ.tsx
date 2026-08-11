@@ -6,7 +6,7 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
-
+import { trackEvent } from "../../utils/analytics";
 interface FAQItem {
   id: number;
   question: string;
@@ -134,15 +134,21 @@ const FAQ = () => {
                   Call Now
                 </a>
 
-                <a
-                  href="https://wa.me/919704143260"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center justify-center gap-3 rounded-xl bg-green-500 px-5 py-3.5 text-[12px] font-semibold text-white transition-colors hover:bg-green-600"
-                >
-                  <FaWhatsapp size={17} />
-                  WhatsApp
-                </a>
+           <a
+  href="https://wa.me/919704143260"
+  target="_blank"
+  rel="noreferrer"
+  onClick={() => {
+    trackEvent("whatsapp_click", {
+      location: "contact_section",
+      button_text: "WhatsApp",
+    });
+  }}
+  className="flex items-center justify-center gap-3 rounded-xl bg-green-500 px-5 py-3.5 text-[12px] font-semibold text-white transition-colors hover:bg-green-600"
+>
+  <FaWhatsapp size={17} />
+  WhatsApp
+</a>
               </div>
             </div>
           </motion.div>
