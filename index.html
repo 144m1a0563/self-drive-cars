@@ -5,7 +5,6 @@
 
     <!-- =========================================
          GOOGLE ANALYTICS 4
-         Replace G-XXXXXXXXXX with your GA4 ID
     ========================================== -->
     <script
       async
@@ -19,47 +18,53 @@
         dataLayer.push(arguments);
       }
 
+      window.gtag = gtag;
+
       gtag("js", new Date());
 
       gtag("config", "G-ZMEVVYETEJ", {
-        send_page_view: true
+        send_page_view: true,
       });
     </script>
     <!-- End Google Analytics -->
 
+    <!-- Responsive -->
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=5"
     />
 
-    <!-- Primary SEO -->
+    <!-- =========================================
+         PRIMARY SEO
+    ========================================== -->
+
     <title>
-      Self Drive Cars in Tirupati | Car Rentals | Tiya Self Drive Cars
+      Tiya Self Drive Cars Tirupati | Self Drive Car Rentals in Tirupati
     </title>
 
     <meta
       name="description"
-      content="Book affordable self drive cars in Tirupati with Tiya Self Drive Cars. Clean hatchbacks, sedans and SUVs available for local, airport, Tirumala and outstation trips."
+      content="Tiya Self Drive Cars Tirupati offers affordable and reliable self drive cars in Tirupati. Rent clean hatchbacks, sedans and SUVs for Tirumala trips, Renigunta Airport, local travel, family trips and outstation journeys. Call +91 97041 43260."
     />
 
     <meta
       name="keywords"
-      content="self drive cars in Tirupati, car rentals in Tirupati, self drive car rental Tirupati, rent a car Tirupati, car hire Tirupati, affordable rental cars Tirupati, SUV rental Tirupati"
+      content="self drive cars in Tirupati, Tiya Self Drive Cars Tirupati, Tirupati self drive cars, self drive car rental Tirupati, car rentals in Tirupati, rent a car Tirupati, car hire Tirupati, affordable self drive cars Tirupati, SUV rental Tirupati, hatchback rental Tirupati, sedan rental Tirupati, Tirumala self drive cars, Renigunta Airport car rental, Tirupati airport self drive cars, outstation car rental Tirupati"
     />
 
     <meta
       name="author"
-      content="Tiya Self Drive Cars"
+      content="Tiya Self Drive Cars Tirupati"
     />
 
     <meta
       name="robots"
-      content="index, follow, max-image-preview:large"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     />
 
     <meta
       name="googlebot"
-      content="index, follow"
+      content="index, follow, max-image-preview:large"
     />
 
     <!-- Canonical -->
@@ -68,11 +73,14 @@
       href="https://tiyaselfdrivecars.com/"
     />
 
-    <!-- Favicon -->
+    <!-- =========================================
+         FAVICON
+    ========================================== -->
+
     <link
       rel="icon"
       type="image/jpeg"
-      href="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=64&h=64&fit=crop"
+      href="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=96&h=96&fit=crop"
     />
 
     <link
@@ -80,7 +88,10 @@
       href="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=180&h=180&fit=crop"
     />
 
-    <!-- Open Graph -->
+    <!-- =========================================
+         OPEN GRAPH / FACEBOOK / WHATSAPP
+    ========================================== -->
+
     <meta
       property="og:type"
       content="website"
@@ -88,12 +99,12 @@
 
     <meta
       property="og:title"
-      content="Self Drive Cars in Tirupati | Tiya Self Drive Cars"
+      content="Tiya Self Drive Cars Tirupati | Self Drive Car Rentals"
     />
 
     <meta
       property="og:description"
-      content="Book clean and affordable self drive cars in Tirupati for local travel, Tirumala visits, airport travel and outstation trips."
+      content="Book affordable self drive cars in Tirupati with Tiya Self Drive Cars Tirupati. Clean hatchbacks, sedans and SUVs for Tirumala, Renigunta Airport, local and outstation travel."
     />
 
     <meta
@@ -103,7 +114,7 @@
 
     <meta
       property="og:site_name"
-      content="Tiya Self Drive Cars"
+      content="Tiya Self Drive Cars Tirupati"
     />
 
     <meta
@@ -118,7 +129,7 @@
 
     <meta
       property="og:image:alt"
-      content="Tiya Self Drive Cars in Tirupati"
+      content="Tiya Self Drive Cars Tirupati - Self Drive Car Rentals in Tirupati"
     />
 
     <meta
@@ -136,7 +147,10 @@
       content="en_IN"
     />
 
-    <!-- Twitter -->
+    <!-- =========================================
+         TWITTER / X
+    ========================================== -->
+
     <meta
       name="twitter:card"
       content="summary_large_image"
@@ -144,12 +158,12 @@
 
     <meta
       name="twitter:title"
-      content="Self Drive Cars in Tirupati | Tiya Self Drive Cars"
+      content="Tiya Self Drive Cars Tirupati | Car Rentals in Tirupati"
     />
 
     <meta
       name="twitter:description"
-      content="Affordable self drive car rentals in Tirupati. Book hatchbacks, sedans and SUVs for local and outstation journeys."
+      content="Affordable self drive cars in Tirupati for Tirumala trips, Renigunta Airport, city travel, family trips and outstation journeys."
     />
 
     <meta
@@ -157,7 +171,10 @@
       content="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&h=630&fit=crop"
     />
 
-    <!-- Local SEO -->
+    <!-- =========================================
+         LOCAL SEO
+    ========================================== -->
+
     <meta
       name="geo.region"
       content="IN-AP"
@@ -178,21 +195,42 @@
       content="#dc2626"
     />
 
-    <!-- Local Business Schema -->
+    <!-- =========================================
+         LOCAL BUSINESS SCHEMA
+    ========================================== -->
+
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "CarRental",
         "@id": "https://tiyaselfdrivecars.com/#business",
-        "name": "Tiya Self Drive Cars",
+
+        "name": "Tiya Self Drive Cars Tirupati",
+
+        "alternateName": [
+          "Tiya Self Drive Cars",
+          "Tiya Cars Tirupati",
+          "Tiya Self Drive Car Rental Tirupati"
+        ],
+
         "url": "https://tiyaselfdrivecars.com/",
+
         "logo": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=300&h=300&fit=crop",
-        "image": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&h=630&fit=crop",
-        "description": "Affordable self drive car rental service in Tirupati offering hatchbacks, sedans and SUVs for local, airport, Tirumala and outstation travel.",
+
+        "image": [
+          "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&h=630&fit=crop"
+        ],
+
+        "description": "Tiya Self Drive Cars Tirupati provides affordable and reliable self drive car rentals in Tirupati. Choose clean hatchbacks, sedans, SUVs and family cars for Tirumala trips, Renigunta Airport travel, local sightseeing, business journeys and outstation trips.",
+
         "telephone": "+919704143260",
+
         "priceRange": "₹₹",
+
         "currenciesAccepted": "INR",
+
         "paymentAccepted": "Cash, UPI, Online Payment",
+
         "areaServed": [
           {
             "@type": "City",
@@ -207,10 +245,15 @@
             "name": "Renigunta Airport"
           },
           {
+            "@type": "City",
+            "name": "Renigunta"
+          },
+          {
             "@type": "AdministrativeArea",
             "name": "Andhra Pradesh"
           }
         ],
+
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "Tirupati",
@@ -218,6 +261,18 @@
           "postalCode": "517501",
           "addressCountry": "IN"
         },
+
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+919704143260",
+          "contactType": "customer service",
+          "areaServed": "IN",
+          "availableLanguage": [
+            "English",
+            "Telugu"
+          ]
+        },
+
         "openingHoursSpecification": [
           {
             "@type": "OpeningHoursSpecification",
@@ -236,14 +291,52 @@
         ]
       }
     </script>
+
+    <!-- =========================================
+         WEBSITE SCHEMA
+    ========================================== -->
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://tiyaselfdrivecars.com/#website",
+        "url": "https://tiyaselfdrivecars.com/",
+        "name": "Tiya Self Drive Cars Tirupati",
+        "description": "Self drive cars and car rentals in Tirupati, Andhra Pradesh.",
+        "publisher": {
+          "@id": "https://tiyaselfdrivecars.com/#business"
+        },
+        "inLanguage": "en-IN"
+      }
+    </script>
+
+    <!-- =========================================
+         ORGANIZATION SCHEMA
+    ========================================== -->
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://tiyaselfdrivecars.com/#organization",
+        "name": "Tiya Self Drive Cars Tirupati",
+        "url": "https://tiyaselfdrivecars.com/",
+        "telephone": "+919704143260",
+        "logo": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=300&h=300&fit=crop"
+      }
+    </script>
   </head>
 
   <body>
     <div id="root"></div>
 
     <noscript>
-      Tiya Self Drive Cars provides affordable self drive cars and car rentals
-      in Tirupati, Andhra Pradesh. Please enable JavaScript to use this website.
+      Tiya Self Drive Cars Tirupati provides affordable and reliable self drive
+      cars and car rentals in Tirupati, Andhra Pradesh. Book hatchbacks, sedans
+      and SUVs for Tirumala trips, Renigunta Airport travel, local sightseeing,
+      family travel and outstation journeys. Call +91 97041 43260 for booking
+      assistance.
     </noscript>
 
     <script
