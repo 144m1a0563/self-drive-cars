@@ -66,27 +66,35 @@ const Navbar = () => {
       <div className="mx-auto max-w-[1500px] px-5 sm:px-8 lg:px-12 xl:px-20">
         <div className="flex h-20 items-center justify-between lg:h-24">
           {/* Logo */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Link
-              to="/"
-              onClick={closeAllMenus}
-              className="block"
-            >
-              <motion.div whileHover={{ scale: 1.05 }}>
-                <h1 className="text-[30px] font-extrabold leading-none tracking-tight text-black lg:text-[36px]">
-                  Tiya
-                </h1>
+         <motion.div
+  initial={{ opacity: 0, x: -40 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ duration: 0.6 }}
+>
+  <Link
+    to="/"
+    onClick={() => {
+      closeAllMenus();
 
-                <p className="mt-1 text-[10px] font-semibold uppercase tracking-[4px] text-gray-700 lg:text-[13px]">
-                  SELF DRIVE CARS
-                </p>
-              </motion.div>
-            </Link>
-          </motion.div>
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }}
+    className="block"
+    aria-label="Tiya Self Drive Cars - Go to homepage"
+  >
+    <motion.div whileHover={{ scale: 1.05 }}>
+      <h1 className="text-[30px] font-extrabold leading-none tracking-tight text-black lg:text-[36px]">
+        Tiya
+      </h1>
+
+      <p className="mt-1 text-[10px] font-semibold uppercase tracking-[4px] text-gray-700 lg:text-[13px]">
+        SELF DRIVE CARS
+      </p>
+    </motion.div>
+  </Link>
+</motion.div>
 
           {/* Desktop navigation */}
           <nav className="hidden flex-1 justify-center lg:flex">
