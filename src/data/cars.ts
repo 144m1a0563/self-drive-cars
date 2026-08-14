@@ -43,8 +43,7 @@ export const cars: Car[] = [
     name: "Maruti Dzire",
     brand: "Maruti Suzuki",
     category: "Sedan",
-    image:
-      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1400&q=90",
+    image: "https://144m1a0563.github.io/AI-Images/belano.jpg",
 
     price: 2000,
 
@@ -95,8 +94,7 @@ export const cars: Car[] = [
     name: "Maruti Baleno",
     brand: "Maruti Suzuki",
     category: "Hatchback",
-    image:
-      "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1400&q=90",
+    image: "https://144m1a0563.github.io/AI-Images/crysta.jpg",
 
     price: 2000,
 
@@ -147,8 +145,7 @@ export const cars: Car[] = [
     name: "Toyota Glanza",
     brand: "Toyota",
     category: "Hatchback",
-    image:
-      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1400&q=90",
+    image: "https://144m1a0563.github.io/AI-Images/glanza.jpg",
 
     price: 2000,
 
@@ -199,8 +196,7 @@ export const cars: Car[] = [
     name: "Maruti Ertiga",
     brand: "Maruti Suzuki",
     category: "MUV",
-    image:
-      "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1400&q=90",
+    image: "https://144m1a0563.github.io/AI-Images/eartiga.jpg",
 
     price: 3000,
 
@@ -251,8 +247,7 @@ export const cars: Car[] = [
     name: "Toyota Innova",
     brand: "Toyota",
     category: "MUV",
-    image:
-      "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1400&q=90",
+    image: "https://144m1a0563.github.io/AI-Images/inova.jpg",
 
     price: 3000,
 
@@ -303,8 +298,7 @@ export const cars: Car[] = [
     name: "Toyota Innova Crysta",
     brand: "Toyota",
     category: "MUV",
-    image:
-      "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1400&q=90",
+    image: "https://144m1a0563.github.io/AI-Images/crysta.jpg",
 
     price: 3500,
 
@@ -355,8 +349,7 @@ export const cars: Car[] = [
     name: "Toyota Fortuner",
     brand: "Toyota",
     category: "SUV",
-    image:
-      "https://images.unsplash.com/photo-1511527844068-006b95d162c2?auto=format&fit=crop&w=1400&q=90",
+    image: "https://144m1a0563.github.io/AI-Images/fortuner.jpg",
 
     price: 4000,
 
