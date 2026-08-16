@@ -213,57 +213,59 @@ const Fleet = () => {
                   className="group overflow-hidden rounded-[26px] border border-gray-100 bg-white shadow-[0_18px_55px_rgba(0,0,0,0.07)] transition-shadow duration-300 hover:shadow-[0_26px_70px_rgba(0,0,0,0.12)]"
                 >
                   {/* Image */}
-                  <Link
-                    to={`/car/${car.slug}`}
-                    aria-label={`Open ${car.name} details`}
-                    className="block"
-                  >
-                    <div className="relative h-[235px] overflow-hidden bg-gray-100 sm:h-[260px]">
-                      <motion.img
-                        src={car.image}
-                        alt={car.name}
-                        loading="lazy"
-                        whileHover={{
-                          scale: 1.06,
-                        }}
-                        transition={{
-                          duration: 0.5,
-                        }}
-                        className="h-full w-full object-cover"
-                      />
+                  {/* Car Image */}
+<Link
+  to={`/car/${car.slug}`}
+  aria-label={`Open ${car.name} details`}
+  className="block"
+>
+  <div className="relative h-[235px] overflow-hidden sm:h-[260px]">
 
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+    <motion.img
+      src={car.image}
+      alt={`${car.name} self drive car in Tirupati`}
+      loading="lazy"
+      whileHover={{
+        scale: 1.03,
+      }}
+      transition={{
+        duration: 0.5,
+      }}
+      className="h-full w-full object-contain"
+    />
 
-                      <span className="absolute left-5 top-5 rounded-full border border-white/30 bg-white/90 px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-gray-800 backdrop-blur">
-                        {car.category}
-                      </span>
+    {/* Bottom dark gradient only */}
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
 
-                      <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
-                        <div>
-                          <p className="text-[9px] font-semibold uppercase tracking-[2px] text-white/65">
-                            Starting from
-                          </p>
+    {/* Category */}
+    <span className="absolute left-5 top-5 rounded-full border border-gray-100 bg-white/95 px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-gray-800 shadow-sm backdrop-blur">
+      {car.category}
+    </span>
 
-                          <p className="mt-1 text-[25px] font-extrabold text-white">
-                            ₹
-                            {startingPrice.toLocaleString(
-                              "en-IN"
-                            )}
+    {/* Price */}
+    <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
+      <div>
+        <p className="text-[9px] font-semibold uppercase tracking-[2px] text-white/80">
+          Starting from
+        </p>
 
-                            {startingPackage && (
-                              <span className="ml-1 text-[10px] font-medium text-white/70">
-                                / {startingPackage.duration}
-                              </span>
-                            )}
-                          </p>
-                        </div>
+        <p className="mt-1 text-[25px] font-extrabold text-white">
+          ₹{startingPrice.toLocaleString("en-IN")}
 
-                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-600 text-white shadow-lg">
-                          <FaCarSide />
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
+          {startingPackage && (
+            <span className="ml-1 text-[10px] font-medium text-white/80">
+              / {startingPackage.duration}
+            </span>
+          )}
+        </p>
+      </div>
+
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-600 text-white shadow-lg">
+        <FaCarSide />
+      </span>
+    </div>
+  </div>
+</Link>
 
                   {/* Card body */}
                   <div className="p-5 sm:p-6">

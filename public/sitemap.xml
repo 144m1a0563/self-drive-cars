@@ -2,25 +2,36 @@
 
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-<url>
-<loc>https://tiyaselfdrivecars.com/</loc>
-<priority>1.0</priority>
-<changefreq>daily</changefreq>
-</url>
+  <url>
+    <loc>https://tiyaselfdrivecars.com/</loc>
+  </url>
 
-<url>
-<loc>https://tiyaselfdrivecars.com/about</loc>
-<priority>0.9</priority>
-</url>
+  <url>
+    <loc>https://tiyaselfdrivecars.com/about</loc>
+  </url>
 
-<url>
-<loc>https://tiyaselfdrivecars.com/cars</loc>
-<priority>0.9</priority>
-</url>
+  <url>
+    <loc>https://tiyaselfdrivecars.com/cars</loc>
+  </url>
 
-<url>
-<loc>https://tiyaselfdrivecars.com/contact</loc>
-<priority>0.8</priority>
-</url>
+  <url>
+    <loc>https://tiyaselfdrivecars.com/contact</loc>
+  </url>
+
+  <url>
+    <loc>https://tiyaselfdrivecars.com/car/maruti-dzire</loc>
+  </url>
+
+  <url>
+    <loc>https://tiyaselfdrivecars.com/car/maruti-baleno</loc>
+  </url>
+
+  <url>
+    <loc>https://tiyaselfdrivecars.com/car/toyota-glanza</loc>
+  </url>
+
+  <url>
+    <loc>https://tiyaselfdrivecars.com/car/maruti-ertiga</loc>
+  </url>
 
 </urlset>
