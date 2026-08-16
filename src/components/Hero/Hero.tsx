@@ -6,7 +6,9 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
+
 import { cars } from "../../data/cars";
+import { trackEvent } from "../../utils/analytics";
 
 interface CarSlide {
   name: string;
@@ -19,25 +21,33 @@ interface Feature {
   icon: ReactNode;
 }
 
+/* =========================================================
+   CAR SLIDES - FIRST 4 CARS FROM cars.ts
+========================================================= */
+
 const carSlides: CarSlide[] = cars.slice(0, 4).map((car) => ({
   name: car.name.toUpperCase(),
   image: car.image,
 }));
 
+/* =========================================================
+   FEATURES
+========================================================= */
+
 const features: Feature[] = [
   {
-    title: "Easy Bookings",
-    description: "Book over phone at your convenience",
+    title: "Easy Car Booking",
+    description: "Fast self drive car booking in Tirupati",
     icon: <FaPhoneAlt />,
   },
   {
     title: "Door Drop & Pickup",
-    description: "Doorstep delivery and pickup facility",
+    description: "Convenient vehicle delivery across Tirupati",
     icon: <FaTruck />,
   },
   {
-    title: "Well Maintained",
-    description: "Clean and maintained cars for every trip",
+    title: "Well Maintained Cars",
+    description: "Clean rental cars for Tirupati and outstation trips",
     icon: <FaRegThumbsUp />,
   },
 ];
@@ -46,8 +56,14 @@ const Hero = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [sliderPaused, setSliderPaused] = useState(false);
 
+  /* =======================================================
+     AUTO SLIDER
+  ======================================================= */
+
   useEffect(() => {
-    if (sliderPaused) return;
+    if (sliderPaused || carSlides.length <= 1) {
+      return;
+    }
 
     const interval = window.setInterval(() => {
       setActiveSlide((previous) =>
@@ -62,364 +78,526 @@ const Hero = () => {
 
   const currentCar = carSlides[activeSlide];
 
+  if (!currentCar) {
+    return null;
+  }
+
   return (
-    <section
-      id="home"
-      onMouseEnter={() => setSliderPaused(true)}
-      onMouseLeave={() => setSliderPaused(false)}
-      className="
-        relative
-        flex
-        min-h-[calc(100dvh-80px)]
-        flex-col
-        overflow-hidden
-        bg-white
-        lg:min-h-[calc(100dvh-96px)]
-      "
-    >
-      {/* Soft background decorations */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -right-40 top-0 h-[520px] w-[520px] rounded-full bg-red-50 blur-3xl" />
+    <>
+      <section
+        id="home"
+        aria-labelledby="home-main-heading"
+        onMouseEnter={() => setSliderPaused(true)}
+        onMouseLeave={() => setSliderPaused(false)}
+        className="
+          relative
+          flex
+          min-h-[calc(100dvh-80px)]
+          scroll-mt-20
+          flex-col
+          overflow-hidden
+          bg-white
+          lg:min-h-[calc(100dvh-96px)]
+          lg:scroll-mt-24
+        "
+      >
+        {/* =================================================
+            BACKGROUND DECORATIONS
+        ================================================== */}
 
-        <div className="absolute left-[35%] top-10 h-[300px] w-[300px] rounded-full bg-orange-50 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -right-40 top-0 h-[520px] w-[520px] rounded-full bg-red-50 blur-3xl" />
 
-        <div className="absolute bottom-24 left-10 h-36 w-36 rounded-full bg-red-100/50 blur-3xl" />
-      </div>
+          <div className="absolute left-[35%] top-10 h-[300px] w-[300px] rounded-full bg-orange-50 blur-3xl" />
 
-      {/* Main hero content */}
-      <div className="relative z-10 flex min-h-0 flex-1 items-center">
-        <div
-          className="
-            mx-auto
-            grid
-            w-full
-            max-w-[1600px]
-            grid-cols-1
-            items-center
-            gap-8
-            px-5
-            py-10
-            sm:px-8
-            lg:grid-cols-[40%_60%]
-            lg:px-12
-            lg:py-6
-            xl:px-16
-          "
-        >
-          {/* Left content */}
-          <motion.div
-            initial={{
-              opacity: 0,
-              x: -55,
-            }}
-            animate={{
-              opacity: 1,
-              x: 0,
-            }}
-            transition={{
-              duration: 0.8,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="relative z-20 text-center lg:text-left"
+          <div className="absolute bottom-24 left-10 h-36 w-36 rounded-full bg-red-100/50 blur-3xl" />
+        </div>
+
+        {/* =================================================
+            MAIN HERO CONTENT
+        ================================================== */}
+
+        <div className="relative z-10 flex min-h-0 flex-1 items-center">
+          <div
+            className="
+              mx-auto
+              grid
+              w-full
+              max-w-[1600px]
+              grid-cols-1
+              items-center
+              gap-8
+              px-5
+              py-10
+              sm:px-8
+              lg:grid-cols-[42%_58%]
+              lg:px-12
+              lg:py-6
+              xl:px-16
+            "
           >
-            <motion.p
+            {/* ===============================================
+                LEFT SEO CONTENT
+            ================================================ */}
+
+            <motion.div
               initial={{
                 opacity: 0,
-                y: 14,
+                x: -55,
               }}
               animate={{
                 opacity: 1,
-                y: 0,
+                x: 0,
               }}
               transition={{
-                delay: 0.15,
+                duration: 0.8,
+                ease: [0.22, 1, 0.36, 1],
               }}
-              className="
-                mb-3
-                text-[10px]
-                font-semibold
-                uppercase
-                tracking-[4px]
-                text-gray-400
-                sm:text-[13px]
-              "
+              className="relative z-20 text-center lg:text-left"
             >
-              Explore Tirupati Your Way
-            </motion.p>
-
-            <h1 className="leading-[0.84] tracking-[-4px] sm:tracking-[-6px]">
-              <span
-                className="
-                  block
-                  font-serif
-                  text-[50px]
-                  font-bold
-                  text-red-600
-                  sm:text-[70px]
-                  lg:text-[72px]
-                  xl:text-[90px]
-                  2xl:text-[104px]
-                "
-              >
-                SELF DRIVE
-              </span>
-
-              <span
-                className="
-                  mt-2
-                  block
-                  font-serif
-                  text-[82px]
-                  font-black
-                  text-black
-                  sm:text-[112px]
-                  lg:text-[120px]
-                  xl:text-[154px]
-                  2xl:text-[176px]
-                "
-              >
-                CARS
-              </span>
-            </h1>
-
-            <p
-              className="
-                mx-auto
-                mt-5
-                max-w-[500px]
-                text-[12px]
-                leading-6
-                text-gray-500
-                sm:text-[14px]
-                lg:mx-0
-              "
-            >
-              Choose your favourite car and enjoy complete freedom, privacy,
-              comfort and affordable self-drive rentals in Tirupati.
-            </p>
-          </motion.div>
-
-          {/* Clean car slider */}
-          <div
-            className="
-              relative
-              flex
-              min-h-[330px]
-              items-center
-              justify-center
-              sm:min-h-[430px]
-              lg:min-h-[500px]
-            "
-          >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentCar.name}
+              <motion.p
                 initial={{
                   opacity: 0,
-                  x: 90,
-                  scale: 0.94,
+                  y: 14,
                 }}
                 animate={{
                   opacity: 1,
-                  x: 0,
-                  scale: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                  x: -70,
-                  scale: 0.95,
+                  y: 0,
                 }}
                 transition={{
-                  duration: 0.65,
-                  ease: [0.22, 1, 0.36, 1],
+                  delay: 0.15,
                 }}
                 className="
-                  absolute
-                  inset-0
-                  flex
-                  flex-col
-                  items-center
-                  justify-center
+                  mb-3
+                  text-[10px]
+                  font-bold
+                  uppercase
+                  tracking-[4px]
+                  text-red-600
+                  sm:text-[13px]
                 "
               >
-                {/* Car image only */}
-                <motion.img
-                  src={currentCar.image}
-                  alt={currentCar.name}
-                  animate={{
-                    y: [0, -8, 0],
-                  }}
-                  transition={{
-                    duration: 3.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  draggable={false}
-                  className="
-                    pointer-events-none
-                    h-[250px]
-                    w-full
-                    max-w-[900px]
-                    select-none
-                    object-contain
-                    sm:h-[340px]
-                    lg:h-[410px]
-                    xl:h-[455px]
-                  "
-                />
+                Tiya Self Drive Cars Tirupati
+              </motion.p>
 
-                {/* Car name only */}
-                <motion.h2
+              {/* Primary SEO H1 */}
+
+              <h1
+                id="home-main-heading"
+                className="
+                  leading-[0.92]
+                  tracking-[-3px]
+                  sm:tracking-[-4px]
+                "
+              >
+                <span
+                  className="
+                    block
+                    font-serif
+                    text-[43px]
+                    font-bold
+                    text-red-600
+                    sm:text-[60px]
+                    lg:text-[63px]
+                    xl:text-[75px]
+                    2xl:text-[84px]
+                  "
+                >
+                  SELF DRIVE CARS
+                </span>
+
+                <span
+                  className="
+                    mt-2
+                    block
+                    font-serif
+                    text-[55px]
+                    font-black
+                    text-black
+                    sm:text-[75px]
+                    lg:text-[78px]
+                    xl:text-[98px]
+                    2xl:text-[110px]
+                  "
+                >
+                  IN TIRUPATI
+                </span>
+              </h1>
+
+              {/* SEO description */}
+
+              <motion.p
+                initial={{
+                  opacity: 0,
+                  y: 15,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  delay: 0.3,
+                }}
+                className="
+                  mx-auto
+                  mt-6
+                  max-w-[570px]
+                  text-[12px]
+                  leading-7
+                  text-gray-600
+                  sm:text-[14px]
+                  lg:mx-0
+                "
+              >
+                Looking for reliable and affordable{" "}
+                <strong className="font-semibold text-gray-900">
+                  self drive cars in Tirupati
+                </strong>
+                ? Tiya Self Drive Cars offers clean and well-maintained
+                hatchbacks, sedans, SUVs and family cars for local travel,
+                Tirumala trips, Renigunta Airport, business journeys and
+                outstation travel.
+              </motion.p>
+
+              <motion.p
+                initial={{
+                  opacity: 0,
+                  y: 15,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  delay: 0.4,
+                }}
+                className="
+                  mx-auto
+                  mt-3
+                  max-w-[570px]
+                  text-[11px]
+                  leading-6
+                  text-gray-500
+                  sm:text-[13px]
+                  lg:mx-0
+                "
+              >
+                Choose flexible 12-hour and 24-hour{" "}
+                <strong className="font-semibold text-gray-800">
+                  car rental packages in Tirupati
+                </strong>{" "}
+                and enjoy privacy, comfort and complete freedom throughout your
+                journey.
+              </motion.p>
+
+              {/* Location tags */}
+
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  y: 15,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  delay: 0.5,
+                }}
+                className="
+                  mt-5
+                  flex
+                  flex-wrap
+                  items-center
+                  justify-center
+                  gap-2
+                  lg:justify-start
+                "
+              >
+                {[
+                  "Tirupati",
+                  "Tirumala",
+                  "Renigunta Airport",
+                  "Outstation",
+                ].map((location) => (
+                  <span
+                    key={location}
+                    className="
+                      rounded-full
+                      border
+                      border-gray-200
+                      bg-white
+                      px-3
+                      py-1.5
+                      text-[9px]
+                      font-semibold
+                      uppercase
+                      tracking-[1px]
+                      text-gray-600
+                      shadow-sm
+                    "
+                  >
+                    {location}
+                  </span>
+                ))}
+              </motion.div>
+            </motion.div>
+
+            {/* ===============================================
+                CAR SLIDER
+            ================================================ */}
+
+            <div
+              className="
+                relative
+                flex
+                min-h-[330px]
+                items-center
+                justify-center
+                sm:min-h-[430px]
+                lg:min-h-[500px]
+              "
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentCar.name}
                   initial={{
                     opacity: 0,
-                    y: 15,
+                    x: 90,
+                    scale: 0.94,
                   }}
                   animate={{
                     opacity: 1,
-                    y: 0,
+                    x: 0,
+                    scale: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    x: -70,
+                    scale: 0.95,
                   }}
                   transition={{
-                    delay: 0.2,
-                    duration: 0.4,
+                    duration: 0.65,
+                    ease: [0.22, 1, 0.36, 1],
                   }}
                   className="
-                    mt-3
-                    text-center
-                    text-[20px]
-                    font-extrabold
-                    uppercase
-                    tracking-[2px]
-                    text-gray-950
-                    sm:text-[26px]
-                    lg:text-[32px]
+                    absolute
+                    inset-0
+                    flex
+                    flex-col
+                    items-center
+                    justify-center
                   "
                 >
-                  {currentCar.name}
-                </motion.h2>
-              </motion.div>
-            </AnimatePresence>
+                  <motion.img
+                    src={currentCar.image}
+                    alt={`${currentCar.name} self drive car in Tirupati - Tiya Self Drive Cars`}
+                    animate={{
+                      y: [0, -8, 0],
+                    }}
+                    transition={{
+                      duration: 3.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    draggable={false}
+                    fetchPriority={
+                      activeSlide === 0 ? "high" : "auto"
+                    }
+                    className="
+                      pointer-events-none
+                      h-[250px]
+                      w-full
+                      max-w-[900px]
+                      select-none
+                      object-contain
+                      sm:h-[340px]
+                      lg:h-[410px]
+                      xl:h-[455px]
+                    "
+                  />
+
+                  <motion.h2
+                    initial={{
+                      opacity: 0,
+                      y: 15,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      delay: 0.2,
+                      duration: 0.4,
+                    }}
+                    className="
+                      mt-3
+                      text-center
+                      text-[20px]
+                      font-extrabold
+                      uppercase
+                      tracking-[2px]
+                      text-gray-950
+                      sm:text-[26px]
+                      lg:text-[32px]
+                    "
+                  >
+                    {currentCar.name}
+                  </motion.h2>
+
+                  <p
+                    className="
+                      mt-1
+                      text-center
+                      text-[10px]
+                      font-medium
+                      uppercase
+                      tracking-[1.5px]
+                      text-gray-400
+                    "
+                  >
+                    Self Drive Car Rental in Tirupati
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Slider dots */}
-      <div className="relative z-20 flex shrink-0 justify-center gap-2 pb-4">
-        {carSlides.map((car, index) => (
-          <button
-            key={car.name}
-            type="button"
-            aria-label={`Show ${car.name}`}
-            onClick={() => setActiveSlide(index)}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              activeSlide === index
-                ? "w-9 bg-red-600"
-                : "w-2 bg-gray-300 hover:bg-gray-400"
-            }`}
-          />
-        ))}
-      </div>
+        {/* =================================================
+            SLIDER DOTS
+        ================================================== */}
 
-      {/* Bottom features */}
-      <div
-        className="
-          relative
-          z-20
-          shrink-0
-          bg-gradient-to-r
-          from-[#ff4e50]
-          via-[#ff715b]
-          to-[#ff405f]
-        "
-      >
+        <div className="relative z-20 flex shrink-0 justify-center gap-2 pb-4">
+          {carSlides.map((car, index) => (
+            <button
+              key={car.name}
+              type="button"
+              aria-label={`Show ${car.name} self drive car`}
+              onClick={() => setActiveSlide(index)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                activeSlide === index
+                  ? "w-9 bg-red-600"
+                  : "w-2 bg-gray-300 hover:bg-gray-400"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* =================================================
+            BOTTOM FEATURES
+        ================================================== */}
+
         <div
           className="
-            mx-auto
-            grid
-            max-w-[1600px]
-            grid-cols-1
-            divide-y
-            divide-white/20
-            px-5
-            sm:px-8
-            md:grid-cols-3
-            md:divide-x
-            md:divide-y-0
-            lg:px-12
-            xl:px-16
+            relative
+            z-20
+            shrink-0
+            bg-gradient-to-r
+            from-[#ff4e50]
+            via-[#ff715b]
+            to-[#ff405f]
           "
         >
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{
-                opacity: 0,
-                y: 18,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-              }}
-              transition={{
-                duration: 0.4,
-                delay: index * 0.08,
-              }}
-              className="
-                flex
-                items-center
-                gap-4
-                px-1
-                py-4
-                sm:px-4
-                lg:gap-5
-                lg:py-5
-              "
-            >
+          <div
+            className="
+              mx-auto
+              grid
+              max-w-[1600px]
+              grid-cols-1
+              divide-y
+              divide-white/20
+              px-5
+              sm:px-8
+              md:grid-cols-3
+              md:divide-x
+              md:divide-y-0
+              lg:px-12
+              xl:px-16
+            "
+          >
+            {features.map((feature, index) => (
               <motion.div
-                whileHover={{
-                  rotate: -7,
-                  scale: 1.05,
+                key={feature.title}
+                initial={{
+                  opacity: 0,
+                  y: 18,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: true,
+                }}
+                transition={{
+                  duration: 0.4,
+                  delay: index * 0.08,
                 }}
                 className="
                   flex
-                  h-13
-                  w-13
-                  shrink-0
                   items-center
-                  justify-center
-                  rounded-full
-                  bg-[#07182f]
-                  text-[20px]
-                  text-white
-                  shadow-xl
-                  lg:h-16
-                  lg:w-16
-                  lg:text-[25px]
+                  gap-4
+                  px-1
+                  py-4
+                  sm:px-4
+                  lg:gap-5
+                  lg:py-5
                 "
               >
-                {feature.icon}
+                <motion.div
+                  whileHover={{
+                    rotate: -7,
+                    scale: 1.05,
+                  }}
+                  className="
+                    flex
+                    h-13
+                    w-13
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-[#07182f]
+                    text-[20px]
+                    text-white
+                    shadow-xl
+                    lg:h-16
+                    lg:w-16
+                    lg:text-[25px]
+                  "
+                >
+                  {feature.icon}
+                </motion.div>
+
+                <div>
+                  <h3 className="font-serif text-[17px] font-bold text-white lg:text-[21px]">
+                    {feature.title}
+                  </h3>
+
+                  <p className="mt-1 text-[10px] font-medium text-white/90 lg:text-[12px]">
+                    {feature.description}
+                  </p>
+                </div>
               </motion.div>
-
-              <div>
-                <h3 className="font-serif text-[17px] font-bold text-white lg:text-[21px]">
-                  {feature.title}
-                </h3>
-
-                <p className="mt-1 text-[10px] font-medium text-white/90 lg:text-[12px]">
-                  {feature.description}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Floating call button */}
+      {/* =====================================================
+          DESKTOP FLOATING CALL BUTTON
+      ===================================================== */}
+
       <motion.a
         href="tel:+919704143260"
-        aria-label="Call Tiya Self Drive Cars"
+        aria-label="Call Tiya Self Drive Cars Tirupati"
+        onClick={() => {
+          trackEvent("phone_click", {
+            location: "hero_desktop_floating",
+            button_text: "Call",
+          });
+        }}
         initial={{
           opacity: 0,
           x: -30,
@@ -441,12 +619,12 @@ const Hero = () => {
         }}
         className="
           fixed
-          bottom-5
-          left-5
+          bottom-6
+          left-6
           z-[9999]
-          flex
-          h-16
-          w-16
+          hidden
+          h-[68px]
+          w-[68px]
           items-center
           justify-center
           rounded-full
@@ -458,21 +636,27 @@ const Hero = () => {
           transition-all
           duration-300
           hover:bg-red-700
-          md:bottom-6
-          md:left-6
-          lg:h-[68px]
-          lg:w-[68px]
+          md:flex
         "
       >
-        <FaPhoneAlt className="text-[26px] lg:text-[30px]" />
+        <FaPhoneAlt className="text-[30px]" />
       </motion.a>
 
-      {/* Floating WhatsApp button */}
+      {/* =====================================================
+          DESKTOP FLOATING WHATSAPP BUTTON
+      ===================================================== */}
+
       <motion.a
-        href="https://wa.me/919704143260?text=Hello%20Tiya%20Self%20Drive%20Cars,%20I%20would%20like%20to%20book%20a%20car."
+        href="https://wa.me/919704143260?text=Hello%20Tiya%20Self%20Drive%20Cars,%20I%20would%20like%20to%20book%20a%20self%20drive%20car%20in%20Tirupati."
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Book through WhatsApp"
+        aria-label="Book self drive car in Tirupati through WhatsApp"
+        onClick={() => {
+          trackEvent("whatsapp_click", {
+            location: "hero_desktop_floating",
+            button_text: "WhatsApp",
+          });
+        }}
         initial={{
           opacity: 0,
           x: 30,
@@ -494,12 +678,12 @@ const Hero = () => {
         }}
         className="
           fixed
-          bottom-5
-          right-5
+          bottom-6
+          right-6
           z-[9999]
-          flex
-          h-16
-          w-16
+          hidden
+          h-[68px]
+          w-[68px]
           items-center
           justify-center
           rounded-full
@@ -511,15 +695,103 @@ const Hero = () => {
           transition-all
           duration-300
           hover:bg-green-600
-          md:bottom-6
-          md:right-6
-          lg:h-[68px]
-          lg:w-[68px]
+          md:flex
         "
       >
-        <FaWhatsapp className="text-[29px] lg:text-[33px]" />
+        <FaWhatsapp className="text-[33px]" />
       </motion.a>
-    </section>
+
+      {/* =====================================================
+          MOBILE FIXED BOTTOM FOOTER
+      ===================================================== */}
+
+      <div
+        className="
+          fixed
+          bottom-0
+          left-0
+          right-0
+          z-[9999]
+          border-t
+          border-gray-200
+          bg-white
+          px-2
+          py-2
+          shadow-[0_-6px_25px_rgba(0,0,0,0.12)]
+          md:hidden
+        "
+      >
+        <div className="grid grid-cols-2 gap-2">
+          {/* CALL */}
+
+          <a
+            href="tel:+919704143260"
+            aria-label="Call Tiya Self Drive Cars Tirupati"
+            onClick={() => {
+              trackEvent("phone_click", {
+                location: "mobile_bottom_bar",
+                button_text: "Call Now",
+              });
+            }}
+            className="
+              flex
+              items-center
+              justify-center
+              gap-2
+              rounded-xl
+              bg-red-600
+              px-4
+              py-3.5
+              text-[13px]
+              font-bold
+              text-white
+              shadow-sm
+              transition
+              active:scale-[0.98]
+            "
+          >
+            <FaPhoneAlt className="text-[17px]" />
+
+            <span>Call Now</span>
+          </a>
+
+          {/* WHATSAPP */}
+
+          <a
+            href="https://wa.me/919704143260?text=Hello%20Tiya%20Self%20Drive%20Cars,%20I%20would%20like%20to%20book%20a%20self%20drive%20car%20in%20Tirupati."
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Book self drive car in Tirupati through WhatsApp"
+            onClick={() => {
+              trackEvent("whatsapp_click", {
+                location: "mobile_bottom_bar",
+                button_text: "WhatsApp",
+              });
+            }}
+            className="
+              flex
+              items-center
+              justify-center
+              gap-2
+              rounded-xl
+              bg-green-500
+              px-4
+              py-3.5
+              text-[13px]
+              font-bold
+              text-white
+              shadow-sm
+              transition
+              active:scale-[0.98]
+            "
+          >
+            <FaWhatsapp className="text-[19px]" />
+
+            <span>WhatsApp</span>
+          </a>
+        </div>
+      </div>
+    </>
   );
 };
 
